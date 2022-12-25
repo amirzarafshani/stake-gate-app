@@ -22,6 +22,7 @@ import SearchBar from "react-native-dynamic-search-bar";
 import { default as SvgImage } from "react-native-colored-remote-svg";
 import { NativeWindStyleSheet } from "nativewind";
 import useAuth from "../hooks/useAuth";
+import CircularProgress from "react-native-circular-progress-indicator";
 
 const fetchData = (page, token) => {
   console.log(page);
@@ -145,19 +146,32 @@ export const RenderData = memo(({ item, navigation }) => {
         });
       }}
     >
-      <View className="flex-row items-center gap-2 flex-1">
-        <View>
-          <Text className="text-md text-[#fefefe]">{item.status}</Text>
-          <Text className="text-[#758aa6]">{item.plan?.name}</Text>
-        </View>
+      <View className="flex-1 items-start">
+        <CircularProgress
+          value={item.remaining}
+          radius={35}
+          duration={500}
+          progressValueColor={"#fefefe"}
+          activeStrokeWidth={2}
+          inActiveStrokeWidth={2}
+          activeStrokeColor={"#F0B90B"}
+          maxValue={item.plan?.days}
+          title={"DAYS LEFT"}
+          titleColor={"white"}
+          titleStyle={{ fontSize: 7 }}
+        />
+
+        {/* <Text className="text-[#758aa6]">{item.plan?.name}</Text> */}
       </View>
-      <View className="items-end flex-1">
-        <Text className="text-base text-[#fefefe] whitespace-nowrap">
-          ${item.amount}
-        </Text>
-        <Text className="text-[#627498] text-xs whitespace-nowrap">
-          {item.staked_at}
-        </Text>
+      <View className="flex-1 items-end justify-start bg-slate-400">
+        <View className="whitespace-nowrap flex-row gap-1 items-baseline">
+          <Text className="text-[#fefefe] text-xl">{item.amount}</Text>
+          <Text className="text-gray-700 text-xs">USDT</Text>
+        </View>
+        <View className="whitespace-nowrap flex-row gap-1 items-baseline">
+          <Text className="text-[#fefefe] text-base">+{item.profit ?? 0}</Text>
+          <Text className="text-gray-700 text-xs">USDT</Text>
+        </View>
       </View>
     </Pressable>
   );

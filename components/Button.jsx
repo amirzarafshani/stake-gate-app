@@ -6,10 +6,9 @@ export default function Button({ label, onPress }) {
     <TouchableOpacity
       onPress={onPress}
       style={{
-        backgroundColor: "#AD40AF",
-        padding: 20,
-        borderRadius: 10,
-        marginBottom: 30,
+        backgroundColor: "#F0B90B",
+        padding: 15,
+        borderRadius: 30,
       }}
     >
       <Text

@@ -85,12 +85,22 @@ export const Navigation = () => {
               <Stack.Screen
                 name="Login"
                 component={LoginScreen}
-                options={{ headerShown: false }}
+                options={{
+                  headerShown: false,
+                  headerLeft: () => false,
+                  gestureEnabled: false,
+                  headerBackVisible: false,
+                }}
               />
               <Stack.Screen
                 name="Register"
                 component={RegisterScreen}
-                options={{ headerShown: false }}
+                options={{
+                  headerShown: false,
+                  headerLeft: () => false,
+                  gestureEnabled: false,
+                  headerBackVisible: false,
+                }}
               />
             </Stack.Navigator>
           )}
