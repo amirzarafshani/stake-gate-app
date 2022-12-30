@@ -137,42 +137,55 @@ export const RenderData = memo(({ item, navigation }) => {
   // }, [item]);
 
   return (
-    <Pressable
-      className="w-full items-center justify-between flex-row rounded-md mb-1.5 p-3 bg-[#1E2026]"
-      onPress={() => {
-        /* 1. Navigate to the Details route with params */
-        navigation.navigate("Deposit", {
-          itemId: item.id,
-        });
-      }}
-    >
-      <View className="flex-1 items-start">
-        <CircularProgress
-          value={item.remaining}
-          radius={35}
-          duration={500}
-          progressValueColor={"#fefefe"}
-          activeStrokeWidth={2}
-          inActiveStrokeWidth={2}
-          activeStrokeColor={"#F0B90B"}
-          maxValue={item.plan?.days}
-          title={"DAYS LEFT"}
-          titleColor={"white"}
-          titleStyle={{ fontSize: 7 }}
-        />
+    <View className="w-full rounded-md mb-1.5 p-3 bg-[#1E2026]">
+      <View className="w-full items-center justify-between flex-row">
+        <View className="flex-1 items-start">
+          <CircularProgress
+            value={item.remaining}
+            radius={35}
+            duration={1500}
+            progressValueColor={"#fefefe"}
+            activeStrokeWidth={2}
+            inActiveStrokeWidth={2}
+            activeStrokeColor={"#F0B90B"}
+            maxValue={item.plan?.days}
+            title={"DAYS LEFT"}
+            titleColor={"white"}
+            titleStyle={{ fontSize: 7 }}
+          />
 
-        {/* <Text className="text-[#758aa6]">{item.plan?.name}</Text> */}
-      </View>
-      <View className="flex-1 items-end justify-start bg-slate-400">
-        <View className="whitespace-nowrap flex-row gap-1 items-baseline">
-          <Text className="text-[#fefefe] text-xl">{item.amount}</Text>
-          <Text className="text-gray-700 text-xs">USDT</Text>
+          {/* <Text className="text-[#758aa6]">{item.plan?.name}</Text> */}
         </View>
-        <View className="whitespace-nowrap flex-row gap-1 items-baseline">
-          <Text className="text-[#fefefe] text-base">+{item.profit ?? 0}</Text>
-          <Text className="text-gray-700 text-xs">USDT</Text>
+        <View className="flex-1 items-end justify-start ">
+          <View className="whitespace-nowrap flex-row gap-1 items-baseline">
+            <Text className="text-[#fefefe] text-xl">{item.amount}</Text>
+            <Text className="text-gray-500 text-xs">USDT</Text>
+          </View>
+          <View className="whitespace-nowrap flex-row gap-1 items-baseline">
+            <Text className="text-[#fefefe] text-base">
+              +{item.calculated_profit ?? 0}
+            </Text>
+            <Text className="text-gray-500 text-xs">USDT</Text>
+          </View>
         </View>
       </View>
-    </Pressable>
+      <View className="flex-row items-center justify-between border-t border-gray-700 pt-3 mt-3">
+        <View className="whitespace-nowrap items-baseline">
+          <Text className="text-gray-500 text-xs">Staked at:</Text>
+          <Text className="text-[#fefefe] text-sm">{item.staked_at}</Text>
+        </View>
+        <Pressable
+          className="bg-[#F0B90B] rounded-full text-white px-3 py-1"
+          onPress={() => {
+            /* 1. Navigate to the Details route with params */
+            navigation.navigate("Deposit", {
+              itemId: item.id,
+            });
+          }}
+        >
+          <Text className="text-white">RELEASE</Text>
+        </Pressable>
+      </View>
+    </View>
   );
 });

@@ -10,21 +10,10 @@ import {
 import useAuth, { AuthProvider } from "./hooks/useAuth";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
-import {
-  Pressable,
-  StatusBar,
-  StyleSheet,
-  View,
-  Text,
-  LayoutChangeEvent,
-} from "react-native";
+import { Pressable, StatusBar, StyleSheet, View, Text } from "react-native";
 // navigation
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
-import {
-  BottomTabBarProps,
-  BottomTabNavigationOptions,
-  createBottomTabNavigator,
-} from "@react-navigation/bottom-tabs";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -39,8 +28,6 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { createStackNavigator } from "@react-navigation/stack";
-import { createDrawerNavigator } from "@react-navigation/drawer";
-import { BlurView } from "expo-blur";
 import DashboardIcon from "./src/assets/svg/DashboardIcon";
 import AssetsIcon from "./src/assets/svg/AssetsIcon";
 import ReferralsIcon from "./src/assets/svg/ReferralsIcon";
@@ -212,12 +199,12 @@ const AnimatedTabBar = ({
   state: { index: activeIndex, routes },
   navigation,
   descriptors,
-}: BottomTabBarProps) => {
+}) => {
   const { bottom } = useSafeAreaInsets();
 
   // get information about the components position on the screen -----
 
-  const reducer = (state: any, action: { x: number; index: number }) => {
+  const reducer = (state, action) => {
     // Add the new value to the state
     return [...state, { x: action.x, index: action.index }];
   };
@@ -225,7 +212,7 @@ const AnimatedTabBar = ({
   const [layout, dispatch] = useReducer(reducer, []);
   // console.log(layout);
 
-  const handleLayout = (event: LayoutChangeEvent, index: number) => {
+  const handleLayout = (event, index) => {
     dispatch({ x: event.nativeEvent.layout.x, index });
   };
 
@@ -239,7 +226,7 @@ const AnimatedTabBar = ({
     // We subtract 25 so the active background is centered behind our TabBar Components
     // 20 pixels is the width of the left part of the svg (the quarter circle outwards)
     // 5 pixels come from the little gap between the active background and the circle of the TabBar Components
-    return [...layout].find(({ index }) => index === activeIndex)!.x - 25;
+    return [...layout].find(({ index }) => index === activeIndex)?.x - 25;
     // Calculate the offset new if the activeIndex changes (e.g. when a new tab is selected)
     // or the layout changes (e.g. when the components haven't finished rendering yet)
   }, [activeIndex, layout]);
@@ -287,19 +274,7 @@ const AnimatedTabBar = ({
 
 // ------------------------------------------------------------------
 
-type TabBarComponentProps = {
-  active?: boolean;
-  options: BottomTabNavigationOptions;
-  onLayout: (e: LayoutChangeEvent) => void;
-  onPress: () => void;
-};
-
-const TabBarComponent = ({
-  active,
-  options,
-  onLayout,
-  onPress,
-}: TabBarComponentProps) => {
+const TabBarComponent = ({ active, options, onLayout, onPress }) => {
   // handle lottie animation -----------------------------------------
   const ref = useRef(null);
 

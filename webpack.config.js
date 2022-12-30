@@ -1,20 +1,13 @@
-const path = require("path");
+const createExpoWebpackConfigAsync = require('@expo/webpack-config');
 
-module.exports = {
-  entry: "./app.tsx",
-  output: {
-    filename: "bundle.js", //nome do bundle a ser criado
-    path: path.resolve(__dirname, "dist"),
-  },
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: "babel-loader",
-        },
-      },
-    ],
-  },
+module.exports = async function (env, argv) {
+  const config = await createExpoWebpackConfigAsync(
+    {
+      ...env,
+      babel: {dangerouslyAddModulePathsToTranspile: ['reanimated']},
+    },
+    argv,
+  );
+  // Customize the config before returning it.
+  return config;
 };
