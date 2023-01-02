@@ -178,8 +178,8 @@ export const RenderData = memo(({ item, navigation }) => {
           className="bg-[#F0B90B] rounded-full text-white px-3 py-1"
           onPress={() => {
             /* 1. Navigate to the Details route with params */
-            navigation.navigate("Deposit", {
-              itemId: item.id,
+            navigation.navigate("Release", {
+              asset_id: item.id,
             });
           }}
         >

@@ -34,7 +34,8 @@ import ReferralsIcon from "./src/assets/svg/ReferralsIcon";
 import ReleasesIcon from "./src/assets/svg/ReleasesIcon";
 import HomeScreen from "./screens/HomeScreen";
 import AssetsScreen from "./screens/AssetsScreen";
-import DepositScreen from "./screens/DepositScreen";
+// import DepositScreen from "./screens/DepositScreen";
+import ReleaseScreen from "./screens/ReleaseScreen";
 // ------------------------------------------------------------------
 
 const Stack = createNativeStackNavigator();
@@ -104,7 +105,7 @@ const BottomTabNavigator = () => {
       screenOptions={{
         headerShown: true,
         tabBarShowLabel: false,
-        headerStyle: { backgroundColor: "#000" },
+        headerStyle: { backgroundColor: "#1E2026" },
         headerTintColor: "#fff",
       }}
       tabBar={(props) => <AnimatedTabBar {...props} />}
@@ -167,12 +168,17 @@ const AssetsStackScreen = () => {
   return (
     <AssetsStack.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: "#000" },
+        headerStyle: { backgroundColor: "#1E2026" },
         headerTintColor: "#fff",
       }}
     >
       <AssetsStack.Screen name="Assets" component={AssetsScreen} />
-      <AssetsStack.Screen name="Deposit" component={DepositScreen} />
+      {/* <AssetsStack.Screen name="Deposit" component={DepositScreen} /> */}
+      <AssetsStack.Screen
+        name="Release"
+        component={ReleaseScreen}
+        options={{ headerTitle: "Release Request" }}
+      />
     </AssetsStack.Navigator>
   );
 };
