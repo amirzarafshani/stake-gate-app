@@ -16,7 +16,7 @@ import Currency from "react-currency-formatter";
 import { BASE_URL } from "../config";
 import useAuth from "../hooks/useAuth";
 import DashboardBg from "../src/assets/svg/dashboardBg";
-import { useFonts, Oswald_400Regular } from "@expo-google-fonts/oswald";
+// import { useFonts, Oswald_400Regular } from "@expo-google-fonts/oswald";
 import * as Clipboard from "expo-clipboard";
 import CanadaFleg from "../src/assets/svg/canadaFleg";
 import UsdtIcon from "../src/assets/svg/usdtIcon";
@@ -39,9 +39,9 @@ export default function ExpensesScreen({ navigation }) {
     total_profit: 0,
   });
   const [lastPageReached, setLastPageReached] = useState(false);
-  let [fontsLoaded] = useFonts({
-    Oswald_400Regular,
-  });
+  // let [fontsLoaded] = useFonts({
+  //   Oswald_400Regular,
+  // });
 
   const {
     data,
@@ -72,7 +72,7 @@ export default function ExpensesScreen({ navigation }) {
 
   const colors = ["#f1e4c7", "#E5E8ED", "#F3F4F6"];
 
-  return !fontsLoaded ? (
+  return !true ? (
     <ActivityIndicator />
   ) : (
     <View className="w-full bg-[#000] flex-1 pb-3">
@@ -174,7 +174,7 @@ export default function ExpensesScreen({ navigation }) {
           </Pressable>
           <Text
             className="flex-row items-center"
-            style={{ fontFamily: "Oswald_400Regular" }}
+            style={{ fontFamily: "Oswald" }}
           >
             <Text className="text-white text-4xl flex-row justify-end items-end">
               <Currency symbol="" quantity={userData.total_amount} />

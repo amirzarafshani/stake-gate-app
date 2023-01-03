@@ -16,6 +16,8 @@ export default function InputField({
   fieldButtonFunction,
   value,
   onChange,
+  marginBottom = 15,
+  style,
 }) {
   const onChange_ = (e) => {
     const value = e.nativeEvent.text;
@@ -29,7 +31,7 @@ export default function InputField({
         borderBottomColor: "#ccc",
         borderBottomWidth: 1,
         paddingBottom: 8,
-        marginBottom: 25,
+        marginBottom: marginBottom,
       }}
     >
       {icon}
@@ -46,7 +48,7 @@ export default function InputField({
         <TextInput
           placeholder={label}
           placeholderTextColor="#666"
-          style={styles.textInput}
+          style={{ ...styles.textInput, style }}
           keyboardType={keyboardType}
           onChange={onChange_}
         />
@@ -65,5 +67,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     flex: 1,
     paddingVertical: 0,
+    fontFamily: "Oswald_400Regular",
+    fontSize: 18,
   },
 });

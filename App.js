@@ -10,7 +10,14 @@ import {
 import useAuth, { AuthProvider } from "./hooks/useAuth";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
-import { Pressable, StatusBar, StyleSheet, View, Text } from "react-native";
+import {
+  Pressable,
+  StatusBar,
+  StyleSheet,
+  View,
+  Text,
+  ActivityIndicator,
+} from "react-native";
 // navigation
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -34,9 +41,13 @@ import ReferralsIcon from "./src/assets/svg/ReferralsIcon";
 import ReleasesIcon from "./src/assets/svg/ReleasesIcon";
 import HomeScreen from "./screens/HomeScreen";
 import AssetsScreen from "./screens/AssetsScreen";
-// import DepositScreen from "./screens/DepositScreen";
+import DepositScreen from "./screens/DepositScreen";
 import ReleaseScreen from "./screens/ReleaseScreen";
 // ------------------------------------------------------------------
+import {
+  useFonts,
+  Oswald_400Regular as Oswald,
+} from "@expo-google-fonts/oswald";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -122,7 +133,7 @@ const BottomTabNavigator = () => {
             return <DashboardIcon sroke={active ? "#000" : "#F0B90B"} />;
           },
         }}
-        component={HomeScreen}
+        component={DashboardStackScreen}
       />
       <Tab.Screen
         name="AssetsStack"
@@ -162,6 +173,30 @@ const BottomTabNavigator = () => {
   );
 };
 
+const DashboardStack = createStackNavigator();
+
+const DashboardStackScreen = () => {
+  return (
+    <DashboardStack.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: "#1E2026" },
+        headerTintColor: "#fff",
+      }}
+    >
+      <DashboardStack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ headerShown: false }}
+      />
+      <DashboardStack.Screen
+        name="Deposit"
+        component={DepositScreen}
+        options={{ headerTitle: "Deposit Request" }}
+      />
+    </DashboardStack.Navigator>
+  );
+};
+
 const AssetsStack = createStackNavigator();
 
 const AssetsStackScreen = () => {
@@ -184,7 +219,13 @@ const AssetsStackScreen = () => {
 };
 
 const App = (props) => {
-  return (
+  let [fontsLoaded] = useFonts({
+    Oswald,
+  });
+
+  return !fontsLoaded ? (
+    <ActivityIndicator />
+  ) : (
     <AuthProvider>
       <SafeAreaProvider>
         <Navigation />
