@@ -23,6 +23,7 @@ import { default as SvgImage } from "react-native-colored-remote-svg";
 import { NativeWindStyleSheet } from "nativewind";
 import useAuth from "../hooks/useAuth";
 import CircularProgress from "react-native-circular-progress-indicator";
+import StepButton from "../components/StepButton";
 
 const fetchData = (page, token) => {
   console.log(page);
@@ -151,40 +152,47 @@ export const RenderData = memo(({ item, navigation }) => {
             maxValue={item.plan?.days}
             title={"DAYS LEFT"}
             titleColor={"white"}
-            titleStyle={{ fontSize: 7 }}
+            titleStyle={{ fontSize: 7, fontFamily: "Oswald" }}
+            progressValueStyle={{
+              fontWeight: "100",
+              fontFamily: "Oswald",
+            }}
           />
 
           {/* <Text className="text-[#758aa6]">{item.plan?.name}</Text> */}
         </View>
         <View className="flex-1 items-end justify-start ">
           <View className="whitespace-nowrap flex-row gap-1 items-baseline">
-            <Text className="text-[#fefefe] text-xl">{item.amount}</Text>
-            <Text className="text-gray-500 text-xs">USDT</Text>
+            <Text className="text-[#fefefe] text-xl font-['Oswald']">
+              {item.amount}
+            </Text>
+            <Text className="text-gray-500 text-xs font-['Oswald']">USDT</Text>
           </View>
           <View className="whitespace-nowrap flex-row gap-1 items-baseline">
-            <Text className="text-[#fefefe] text-base">
+            <Text className="text-[#fefefe] text-base font-['Oswald']">
               +{item.calculated_profit ?? 0}
             </Text>
-            <Text className="text-gray-500 text-xs">USDT</Text>
+            <Text className="text-gray-500 text-xs font-['Oswald']">USDT</Text>
           </View>
         </View>
       </View>
       <View className="flex-row items-center justify-between border-t border-gray-700 pt-3 mt-3">
         <View className="whitespace-nowrap items-baseline">
-          <Text className="text-gray-500 text-xs">Staked at:</Text>
-          <Text className="text-[#fefefe] text-sm">{item.staked_at}</Text>
+          <Text className="text-gray-500 text-xs font-['Oswald']">
+            Staked at:
+          </Text>
+          <Text className="text-[#fefefe] text-sm font-['Oswald']">
+            {item.staked_at}
+          </Text>
         </View>
-        <Pressable
-          className="bg-[#F0B90B] rounded-full text-white px-3 py-1"
+        <StepButton
+          label={"Release"}
           onPress={() => {
-            /* 1. Navigate to the Details route with params */
             navigation.navigate("Release", {
               asset_id: item.id,
             });
           }}
-        >
-          <Text className="text-white">RELEASE</Text>
-        </Pressable>
+        />
       </View>
     </View>
   );

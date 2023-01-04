@@ -156,12 +156,12 @@ export default function ExpensesScreen({ navigation }) {
                 <TouchableOpacity
                   onPress={() => copyToClipboard(userData.referral_code)}
                 >
-                  <Text className="p-1 text-base text-blue-800">
+                  <Text className="p-1 text-base text-blue-800 font-['Oswald'] tracking-wide">
                     Your Referral Code: {userData.referral_code}
                   </Text>
                 </TouchableOpacity>
 
-                <Text className="p-1 text-xs text-gray-500">
+                <Text className="p-1 text-xs text-gray-500 font-['Oswald'] tracking-wide">
                   Your Referred Users Count: {userData.referral_count}
                 </Text>
               </View>

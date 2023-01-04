@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     flex: 1,
     paddingVertical: 0,
-    fontFamily: "Oswald_400Regular",
+    fontFamily: "Oswald",
     fontSize: 18,
   },
 });

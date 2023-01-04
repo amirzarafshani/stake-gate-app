@@ -48,7 +48,8 @@ import {
   useFonts,
   Oswald_400Regular as Oswald,
 } from "@expo-google-fonts/oswald";
-
+import { LogBox } from "react-native";
+LogBox.ignoreLogs(["new NativeEventEmitter"]);
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -74,7 +75,10 @@ export const Navigation = () => {
   });
 
   return (
-    <NavigationContainer theme={navTheme}>
+    <NavigationContainer
+      theme={navTheme}
+      options={{ headerTitleStyle: { fontFamily: "Oswald" } }}
+    >
       <QueryClientProvider client={queryClient}>
         <TailwindProvider>
           {userToken ? (
@@ -191,7 +195,10 @@ const DashboardStackScreen = () => {
       <DashboardStack.Screen
         name="Deposit"
         component={DepositScreen}
-        options={{ headerTitle: "Deposit Request" }}
+        options={{
+          headerTitle: "Deposit Request",
+          headerTitleStyle: { fontFamily: "Oswald" },
+        }}
       />
     </DashboardStack.Navigator>
   );
@@ -205,6 +212,7 @@ const AssetsStackScreen = () => {
       screenOptions={{
         headerStyle: { backgroundColor: "#1E2026" },
         headerTintColor: "#fff",
+        headerTitleStyle: { fontFamily: "Oswald" },
       }}
     >
       <AssetsStack.Screen name="Assets" component={AssetsScreen} />
@@ -212,7 +220,10 @@ const AssetsStackScreen = () => {
       <AssetsStack.Screen
         name="Release"
         component={ReleaseScreen}
-        options={{ headerTitle: "Release Request" }}
+        options={{
+          headerTitle: "Release Request",
+          headerTitleStyle: { fontFamily: "Oswald" },
+        }}
       />
     </AssetsStack.Navigator>
   );
