@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Dimensions, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "../components/Button";
@@ -10,11 +10,17 @@ import { useNavigation } from "@react-navigation/native";
 import DashboardBg from "../src/assets/svg/dashboardBg";
 import Logo from "../src/assets/svg/Logo";
 
-export default function LoginScreen() {
+export default function LoginScreen(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useAuth();
+  const { userToken, login } = useAuth();
   const navigation = useNavigation();
+
+  useEffect(() => {
+    if (userToken) {
+      props.navigation.navigate("Home");
+    }
+  }, [userToken]);
 
   return (
     <SafeAreaView

@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useRef } from "react";
+import React, { useEffect, useReducer, useRef, useState } from "react";
 import { TailwindProvider } from "tailwindcss-react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import {
@@ -19,12 +19,17 @@ import {
   ActivityIndicator,
 } from "react-native";
 // navigation
-import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
+import {
+  DefaultTheme,
+  NavigationContainer,
+  useNavigation,
+} from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 // svg
 import Svg, { Path } from "react-native-svg";
 // reanimated
@@ -39,17 +44,20 @@ import DashboardIcon from "./src/assets/svg/DashboardIcon";
 import AssetsIcon from "./src/assets/svg/AssetsIcon";
 import ReferralsIcon from "./src/assets/svg/ReferralsIcon";
 import ReleasesIcon from "./src/assets/svg/ReleasesIcon";
+import SplashScreen from "./screens/SplashScreen";
 import HomeScreen from "./screens/HomeScreen";
 import AssetsScreen from "./screens/AssetsScreen";
 import DepositScreen from "./screens/DepositScreen";
 import ReleaseScreen from "./screens/ReleaseScreen";
 // ------------------------------------------------------------------
-import {
-  useFonts,
-  Oswald_400Regular as Oswald,
-} from "@expo-google-fonts/oswald";
+// import {
+//   useFonts,
+//   Oswald_400Regular as Oswald,
+// } from "@expo-google-fonts/oswald";
+
 import { LogBox } from "react-native";
 LogBox.ignoreLogs(["new NativeEventEmitter"]);
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -62,6 +70,8 @@ navTheme.colors.text = "#fff";
 // ------------------------------------------------------------------
 export const Navigation = () => {
   let { userToken, logOut } = useAuth();
+  const navigationRef = React.useRef();
+  const [noPaddingStatusBar, setNoPaddingStatusBar] = useState(false);
 
   const queryClient = new QueryClient({
     queryCache: new QueryCache({
@@ -75,16 +85,45 @@ export const Navigation = () => {
   });
 
   return (
-    <NavigationContainer
-      theme={navTheme}
-      options={{ headerTitleStyle: { fontFamily: "Oswald" } }}
+    <View
+      style={{
+        flex: 1,
+        paddingTop: noPaddingStatusBar ? 0 : StatusBar.currentHeight,
+        backgroundColor: "#1E2026",
+      }}
     >
-      <QueryClientProvider client={queryClient}>
-        <TailwindProvider>
-          {userToken ? (
-            <BottomTabNavigator />
-          ) : (
-            <Stack.Navigator>
+      <NavigationContainer
+        ref={navigationRef}
+        theme={navTheme}
+        options={{ headerTitleStyle: { fontFamily: "Oswald" } }}
+        onStateChange={() => {
+          const currentRouteName =
+            navigationRef.current.getCurrentRoute()?.name;
+          setNoPaddingStatusBar(
+            ["Splash", "Home", "Login", "Register"].includes(currentRouteName)
+          );
+        }}
+        onReady={() => {
+          const currentRouteName =
+            navigationRef.current.getCurrentRoute()?.name;
+          setNoPaddingStatusBar(
+            ["Splash", "Home", "Login", "Register"].includes(currentRouteName)
+          );
+        }}
+      >
+        <QueryClientProvider client={queryClient}>
+          <TailwindProvider>
+            <Stack.Navigator initialRouteName="Splash">
+              <Stack.Screen
+                name="Splash"
+                options={{ animationEnabled: false, header: () => null }}
+                component={SplashScreen}
+              />
+              <Stack.Screen
+                name="Home"
+                options={{ header: () => null }}
+                component={BottomTabNavigator}
+              />
               <Stack.Screen
                 name="Login"
                 component={LoginScreen}
@@ -106,10 +145,10 @@ export const Navigation = () => {
                 }}
               />
             </Stack.Navigator>
-          )}
-        </TailwindProvider>
-      </QueryClientProvider>
-    </NavigationContainer>
+          </TailwindProvider>
+        </QueryClientProvider>
+      </NavigationContainer>
+    </View>
   );
 };
 
@@ -182,6 +221,7 @@ const DashboardStack = createStackNavigator();
 const DashboardStackScreen = () => {
   return (
     <DashboardStack.Navigator
+      initialRouteName="Home"
       screenOptions={{
         headerStyle: { backgroundColor: "#1E2026" },
         headerTintColor: "#fff",
@@ -213,6 +253,7 @@ const AssetsStackScreen = () => {
         headerStyle: { backgroundColor: "#1E2026" },
         headerTintColor: "#fff",
         headerTitleStyle: { fontFamily: "Oswald" },
+        translucent: true,
       }}
     >
       <AssetsStack.Screen name="Assets" component={AssetsScreen} />
@@ -230,11 +271,11 @@ const AssetsStackScreen = () => {
 };
 
 const App = (props) => {
-  let [fontsLoaded] = useFonts({
-    Oswald,
-  });
+  // let [fontsLoaded] = useFonts({
+  //   Oswald,
+  // });
 
-  return !fontsLoaded ? (
+  return !true ? (
     <ActivityIndicator />
   ) : (
     <AuthProvider>
@@ -321,7 +362,16 @@ const AnimatedTabBar = ({
               active={active}
               options={options}
               onLayout={(e) => handleLayout(e, index)}
-              onPress={() => navigation.navigate(route.name)}
+              onPress={() => {
+                console.log(route.state?.routeNames);
+                if (route.state?.routeNames?.length > 0) {
+                  navigation.navigate(route.name, {
+                    screen: route.state.routeNames[0],
+                  });
+                } else {
+                  navigation.navigate(route.name);
+                }
+              }}
             />
           );
         })}

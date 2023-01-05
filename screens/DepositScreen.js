@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, View, StyleSheet, ScrollView } from "react-native";
+import { Text, View, StyleSheet, ScrollView, Pressable } from "react-native";
 import Constants from "expo-constants";
 import useAuth from "../hooks/useAuth";
 import InputField from "../components/InputField";
@@ -7,11 +7,13 @@ import axios from "axios";
 import { BASE_URL } from "../config";
 import UsdtIcon from "../src/assets/svg/usdtIcon";
 import StepButton from "../components/StepButton";
+// import CustomImagePicker from "../components/CustomImagePicker";
 
 function DepositScreen({ route, navigation }) {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(3);
   const [amount, setAmount] = useState("");
   const [plans, setPlans] = useState(undefined);
+  const [selectedPlan, setSelectedPlan] = useState(undefined);
   const [isGettingPlans, setIsGettingPlans] = useState(false);
   const { userToken } = useAuth();
 
@@ -26,9 +28,7 @@ function DepositScreen({ route, navigation }) {
         },
       })
       .then((res) => {
-        const { data } = res;
-        setPlans(data);
-
+        setPlans(res.data);
         setStep(2);
       })
       .catch((err) => {
@@ -37,6 +37,19 @@ function DepositScreen({ route, navigation }) {
       .finally(() => {
         setIsGettingPlans(false);
       });
+  };
+
+  let { logOut } = useAuth();
+
+  const handleGoToStep1 = () => {
+    setSelectedPlan(undefined);
+    setStep(1);
+  };
+
+  const handleGoToStep3 = () => {
+    if (selectedPlan) {
+      setStep(3);
+    }
   };
 
   return (
@@ -102,26 +115,48 @@ function DepositScreen({ route, navigation }) {
                 Select a plan
               </Text>
               <View className={step === 2 ? "h-auto" : "h-0 overflow-hidden"}>
-                <View className="mt-5 mb-2">
+                <View className="mt-5 mb-2 space-y-1">
                   {plans?.map((plan, index) => (
-                    <View key={`plan-item-${index}`}>
-                      <Text>{plan.name}</Text>
-                    </View>
+                    <Pressable
+                      key={`plan-item-${index}`}
+                      onPress={() => setSelectedPlan(plan.id)}
+                    >
+                      <View
+                        className={`w-full border border-gray-700 rounded-xl p-1 ${
+                          selectedPlan === plan.id ? "bg-[#F0B90B]" : ""
+                        }`}
+                      >
+                        <View className="flex-row items-center justify-between">
+                          <Text className="text-white font-['Oswald'] text-lg capitalize">
+                            {plan.name}
+                          </Text>
+                          <Text className="text-white font-['Oswald'] text-base capitalize">
+                            {plan.plan_type === "fixed"
+                              ? `Days: ${plan.days}`
+                              : ""}
+                          </Text>
+                        </View>
+                        <View className="flex-row items-center justify-between">
+                          <Text className="text-white font-['Oswald'] text-lg capitalize">
+                            profit: {plan.profit}
+                          </Text>
+                          <Text className="text-white font-['Oswald'] text-base capitalize">
+                            penalty: {plan.penalty}
+                          </Text>
+                        </View>
+                      </View>
+                    </Pressable>
                   ))}
                 </View>
                 <View className="flex-row mt-5 mb-2">
                   <View className="mr-3">
-                    <StepButton
-                      label={"Back"}
-                      onPress={() => setStep(1)}
-                      // disabled={isGettingPlans || !amount}
-                    />
+                    <StepButton label={"Back"} onPress={handleGoToStep1} />
                   </View>
                   <View className="">
                     <StepButton
                       label={"Next"}
-                      // onPress={handleGetPlans}
-                      // disabled={isGettingPlans || !amount}
+                      onPress={handleGoToStep3}
+                      disabled={!selectedPlan}
                     />
                   </View>
                 </View>
@@ -147,11 +182,17 @@ function DepositScreen({ route, navigation }) {
               </Text>
               <View className={step === 3 ? "h-auto" : "h-0 overflow-hidden"}>
                 <Text className="text-white">step 3 content</Text>
+                {/* <CustomImagePicker /> */}
               </View>
             </View>
           </View>
         </View>
       </ScrollView>
+      <StepButton
+        label={"Logout"}
+        onPress={logOut}
+        // disabled={isGettingPlans || !amount}
+      />
     </View>
   );
 }
