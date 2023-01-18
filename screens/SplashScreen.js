@@ -2,6 +2,8 @@ import React, { useRef, useState, useEffect } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import {
   useFonts,
+  Oswald_200ExtraLight as Oswald200,
+  Oswald_300Light as Oswald300,
   Oswald_400Regular as Oswald,
 } from "@expo-google-fonts/oswald";
 import useAuth from "../hooks/useAuth";
@@ -12,6 +14,8 @@ const SplashScreen = (props) => {
   const [authLoaded, setAuthLoaded] = useState(0);
   let [fontsLoaded] = useFonts({
     Oswald,
+    Oswald200,
+    Oswald300,
   });
   let { userToken, logOut } = useAuth();
 
@@ -35,7 +39,7 @@ const SplashScreen = (props) => {
         },
       })
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         setAuthLoaded(2);
       })
       .catch((err) => {
@@ -46,6 +50,7 @@ const SplashScreen = (props) => {
   };
 
   useEffect(() => {
+    // console.log({ authLoaded });
     if (fontsLoaded) {
       if (authLoaded === 2) {
         props.navigation.replace("Home");

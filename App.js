@@ -17,6 +17,8 @@ import {
   View,
   Text,
   ActivityIndicator,
+  Button,
+  TouchableOpacity,
 } from "react-native";
 // navigation
 import {
@@ -38,17 +40,19 @@ import Animated, {
   withTiming,
   useDerivedValue,
 } from "react-native-reanimated";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import Feather from "react-native-vector-icons/Feather";
 
 import { createStackNavigator } from "@react-navigation/stack";
 import DashboardIcon from "./src/assets/svg/DashboardIcon";
 import AssetsIcon from "./src/assets/svg/AssetsIcon";
-import ReferralsIcon from "./src/assets/svg/ReferralsIcon";
-import ReleasesIcon from "./src/assets/svg/ReleasesIcon";
 import SplashScreen from "./screens/SplashScreen";
 import HomeScreen from "./screens/HomeScreen";
 import AssetsScreen from "./screens/AssetsScreen";
 import DepositScreen from "./screens/DepositScreen";
-import ReleaseScreen from "./screens/ReleaseScreen";
+import SettingsScreen from "./screens/SettingsScreen";
+import ReferralsScreen from "./screens/ReferralsScreen";
 // ------------------------------------------------------------------
 // import {
 //   useFonts,
@@ -152,7 +156,25 @@ export const Navigation = () => {
   );
 };
 
-const BottomTabNavigator = () => {
+const config = {
+  animation: "spring",
+  config: {
+    stiffness: 1000,
+    damping: 500,
+    mass: 3,
+    overshootClamping: true,
+    restDisplacementThreshold: 0.01,
+    restSpeedThreshold: 0.01,
+  },
+};
+const BottomTabNavigator = ({ navigation }) => {
+  let { logOut } = useAuth();
+
+  const handleLogOut = () => {
+    logOut();
+    navigation.navigate("Login");
+  };
+
   return (
     <Tab.Navigator
       // @ts-ignore
@@ -197,20 +219,37 @@ const BottomTabNavigator = () => {
         options={{
           // @ts-ignore
           tabBarIcon: ({ ref, active }) => {
-            return <ReferralsIcon sroke={active ? "#000" : "#F0B90B"} />;
+            return (
+              <MaterialIcons
+                name="supervised-user-circle"
+                size={32}
+                color={active ? "#000" : "#F0B90B"}
+              />
+            );
           },
         }}
-        component={PlaceholderScreen}
+        component={ReferralsScreen}
       />
       <Tab.Screen
-        name="Releases"
+        name="Settings"
         options={{
           // @ts-ignore
           tabBarIcon: ({ ref, active }) => {
-            return <ReleasesIcon sroke={active ? "#000" : "#F0B90B"} />;
+            return (
+              <Ionicons
+                name="settings-outline"
+                size={32}
+                color={active ? "#000" : "#F0B90B"}
+              />
+            );
           },
+          headerRight: () => (
+            <TouchableOpacity onPress={handleLogOut} className="px-4">
+              <Feather name="power" size={24} color="#fff" />
+            </TouchableOpacity>
+          ),
         }}
-        component={PlaceholderScreen}
+        component={SettingsScreen}
       />
     </Tab.Navigator>
   );
@@ -256,16 +295,17 @@ const AssetsStackScreen = () => {
         translucent: true,
       }}
     >
-      <AssetsStack.Screen name="Assets" component={AssetsScreen} />
-      {/* <AssetsStack.Screen name="Deposit" component={DepositScreen} /> */}
       <AssetsStack.Screen
-        name="Release"
-        component={ReleaseScreen}
+        name="Assets"
+        component={AssetsScreen}
         options={{
-          headerTitle: "Release Request",
-          headerTitleStyle: { fontFamily: "Oswald" },
+          transitionSpec: {
+            open: config,
+            close: config,
+          },
         }}
       />
+      {/* <AssetsStack.Screen name="Deposit" component={DepositScreen} /> */}
     </AssetsStack.Navigator>
   );
 };

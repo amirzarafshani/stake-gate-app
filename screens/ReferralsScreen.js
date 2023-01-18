@@ -12,7 +12,7 @@ import StepButton from "../components/StepButton";
 
 const fetchData = (page, token) => {
   console.log(page);
-  return axios.get(`${BASE_URL}/assets?page=${page}&page_size=10`, {
+  return axios.get(`${BASE_URL}/referrals?page=${page}&page_size=10`, {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
@@ -20,10 +20,9 @@ const fetchData = (page, token) => {
   });
 };
 
-export default function AssetsScreen({ navigation }) {
+export default function ReferralsScreen({ navigation }) {
   const { userToken } = useAuth();
   const [dataList, setDataList] = useState([]);
-  const [coinIdsList, setCoinIdsList] = useState(undefined);
   const [lastPageReached, setLastPageReached] = useState(false);
 
   const {
@@ -58,13 +57,13 @@ export default function AssetsScreen({ navigation }) {
   useEffect(() => {
     if (!data) return;
 
-    let items = data?.pages[data?.pages?.length - 1]?.data?.items;
-    // console.log(data?.pages);
-    if (items.current_page === items.total_pages) {
-      setLastPageReached(true);
-    }
+    // let items = data?.pages[data?.pages?.length - 1]?.data;
+    console.log(data?.pages?.flatMap((x) => x.data));
+    // if (items.current_page === items.total_pages) {
+    setLastPageReached(true);
+    // }
 
-    setDataList(data?.pages?.flatMap((x) => x.data?.items));
+    setDataList(data?.pages?.flatMap((x) => x.data));
   }, [data]);
 
   const renderSpinner = () => {
@@ -104,80 +103,33 @@ export default function AssetsScreen({ navigation }) {
   );
 }
 
-export const RenderData = memo(({ item, navigation }) => {
-  // const [price, setPrice] = useState(0);
-
-  // const startSocket = (asset) => {
-  //   let ws = new WebSocket(
-  //     `wss://stream.binance.com:9443/ws/${asset}usdt@trade`
-  //   );
-  //   ws.onmessage = (e) => {
-  //     // console.log(asset, " ", parseFloat(JSON.parse(e.data).p).toFixed(2));
-  //     setPrice(parseFloat(JSON.parse(e.data).p).toFixed(2));
-  //   };
-  // };
-
-  // useEffect(() => {
-  //   setPrice(parseFloat(item.current_price));
-  //   // startSocket(item.symbol);
-  // }, [item]);
-
+export const RenderData = memo(({ item }) => {
   return (
     <View className="w-full rounded-md mb-1.5 p-3 bg-[#1E2026]">
       <View className="w-full items-center justify-between flex-row">
-        <View className="flex-1 items-start">
-          <CircularProgress
-            value={item.remaining}
-            radius={35}
-            duration={1500}
-            progressValueColor={"#fefefe"}
-            activeStrokeWidth={2}
-            inActiveStrokeWidth={2}
-            activeStrokeColor={"#F0B90B"}
-            maxValue={item.plan?.days}
-            title={"DAYS LEFT"}
-            titleColor={"white"}
-            titleStyle={{ fontSize: 7, fontFamily: "Oswald" }}
-            progressValueStyle={{
-              fontWeight: "100",
-              fontFamily: "Oswald",
-            }}
-          />
-
-          {/* <Text className="text-[#758aa6]">{item.plan?.name}</Text> */}
-        </View>
-        <View className="flex-1 items-end justify-start ">
-          <View className="whitespace-nowrap flex-row gap-1 items-baseline">
-            <Text className="text-[#fefefe] text-xl font-['Oswald']">
-              {item.amount}
-            </Text>
-            <Text className="text-gray-500 text-xs font-['Oswald']">USDT</Text>
-          </View>
-          <View className="whitespace-nowrap flex-row gap-1 items-baseline">
-            <Text className="text-[#fefefe] text-base font-['Oswald']">
-              +{item.calculated_profit ?? 0}
-            </Text>
-            <Text className="text-gray-500 text-xs font-['Oswald']">USDT</Text>
-          </View>
+        <View className="flex-1 justify-start ">
+          <Text className="text-[#fefefe] text-lg font-['Oswald300']">
+            {item.email}
+          </Text>
         </View>
       </View>
       <View className="flex-row items-center justify-between border-t border-gray-700 pt-3 mt-3">
         <View className="whitespace-nowrap items-baseline">
-          <Text className="text-gray-500 text-xs font-['Oswald']">
-            Staked at:
+          <Text className="text-gray-500 text-xs font-['Oswald200']">
+            Register Date:
           </Text>
-          <Text className="text-[#fefefe] text-sm font-['Oswald']">
-            {item.staked_at}
+          <Text className="text-[#fefefe] text-sm font-['Oswald300']">
+            {item.register_date}
           </Text>
         </View>
-        <StepButton
-          label={"Release"}
-          onPress={() => {
-            navigation.navigate("Release", {
-              asset_id: item.id,
-            });
-          }}
-        />
+        <View className="whitespace-nowrap items-baseline">
+          <Text className="text-gray-500 text-xs font-['Oswald200']">
+            Referred User:
+          </Text>
+          <Text className="text-[#fefefe] text-sm font-['Oswald300'] self-end">
+            {item.referrals?.length ?? 0}
+          </Text>
+        </View>
       </View>
     </View>
   );

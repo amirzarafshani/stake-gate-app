@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Dimensions, Text, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  BackHandler,
+  Dimensions,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Button from "../components/Button";
 import InputField from "../components/InputField";
@@ -13,7 +20,7 @@ import Logo from "../src/assets/svg/Logo";
 export default function LoginScreen(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { userToken, login } = useAuth();
+  const { userToken, login, isLoading } = useAuth();
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -21,6 +28,30 @@ export default function LoginScreen(props) {
       props.navigation.navigate("Home");
     }
   }, [userToken]);
+
+  const backActionHandler = () => {
+    Alert.alert("Exit", "Are you sure you want to exit?", [
+      {
+        text: "Cancel",
+        onPress: () => null,
+        style: "cancel",
+      },
+      { text: "YES", onPress: () => BackHandler.exitApp() },
+    ]);
+    return true;
+  };
+
+  useEffect(() => {
+    // Add event listener for hardware back button press on Android
+    BackHandler.addEventListener("hardwareBackPress", backActionHandler);
+
+    return () =>
+      // clear/remove event listener
+      {
+        // console.log("exit listener cleared");
+        BackHandler.removeEventListener("hardwareBackPress", backActionHandler);
+      };
+  }, []);
 
   return (
     <SafeAreaView
@@ -71,11 +102,13 @@ export default function LoginScreen(props) {
         </View>
 
         <Button
+          disabled={isLoading}
           label={"Login"}
           onPress={() => {
             login(email, password);
           }}
           className="bg-[#F0B90B] w-full"
+          isLoading={isLoading}
         />
       </View>
 

@@ -1,17 +1,32 @@
 import React, { useState } from "react";
-import { Text, View, StyleSheet, ScrollView, Pressable } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  ScrollView,
+  Pressable,
+  TouchableOpacity,
+  TextInput,
+} from "react-native";
 import Constants from "expo-constants";
 import useAuth from "../hooks/useAuth";
 import InputField from "../components/InputField";
 import axios from "axios";
-import { BASE_URL } from "../config";
+import { BASE_URL, DEPOSIT_WALLET_ADDRESS } from "../config";
 import UsdtIcon from "../src/assets/svg/usdtIcon";
 import StepButton from "../components/StepButton";
-// import CustomImagePicker from "../components/CustomImagePicker";
+import ImagePicker from "../components/ImagePicker";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import Feather from "react-native-vector-icons/Feather";
+import Octicons from "react-native-vector-icons/Octicons";
+import * as Clipboard from "expo-clipboard";
+import CircularProgress from "react-native-circular-progress-indicator";
 
 function DepositScreen({ route, navigation }) {
-  const [step, setStep] = useState(3);
+  const [step, setStep] = useState(1);
   const [amount, setAmount] = useState("");
+  const [transaction_id, setTransactionId] = useState("");
+  const [image, setImage] = useState("");
   const [plans, setPlans] = useState(undefined);
   const [selectedPlan, setSelectedPlan] = useState(undefined);
   const [isGettingPlans, setIsGettingPlans] = useState(false);
@@ -46,11 +61,31 @@ function DepositScreen({ route, navigation }) {
     setStep(1);
   };
 
+  const handleGoToStep2 = () => {
+    setStep(2);
+  };
+
   const handleGoToStep3 = () => {
     if (selectedPlan) {
       setStep(3);
     }
   };
+
+  const handleImagePicked = (image) => {
+    setImage(image);
+  };
+
+  const handleCopyWalletAddress = async () => {
+    await Clipboard.setStringAsync(DEPOSIT_WALLET_ADDRESS);
+  };
+
+  const handlePasteTransactionId = async () => {
+    const text = await Clipboard.getStringAsync();
+    console.log(text);
+    setTransactionId(text);
+  };
+
+  const handleSubmitSeposit = () => {};
 
   return (
     <View style={styles.container}>
@@ -62,7 +97,9 @@ function DepositScreen({ route, navigation }) {
                 step >= 1 ? "bg-[#F0B90B]" : "bg-gray-600"
               }`}
             >
-              <Text className="text-white self-center font-['Oswald']">1</Text>
+              <Text className="text-white self-center font-['Oswald'] leading-5">
+                1
+              </Text>
             </View>
             <View className="grow w-[1px] bg-white self-center m-1" />
           </View>
@@ -105,7 +142,9 @@ function DepositScreen({ route, navigation }) {
                 step >= 2 ? "bg-[#F0B90B]" : "bg-gray-600"
               }`}
             >
-              <Text className="text-white self-center font-['Oswald']">2</Text>
+              <Text className="text-white self-center font-['Oswald'] leading-5">
+                2
+              </Text>
             </View>
             <View className="grow w-[1px] bg-white self-center m-1" />
           </View>
@@ -122,27 +161,95 @@ function DepositScreen({ route, navigation }) {
                       onPress={() => setSelectedPlan(plan.id)}
                     >
                       <View
-                        className={`w-full border border-gray-700 rounded-xl p-1 ${
+                        className={`w-full h-20 flex-row border border-gray-700 rounded-xl overflow-hidden ${
                           selectedPlan === plan.id ? "bg-[#F0B90B]" : ""
                         }`}
                       >
-                        <View className="flex-row items-center justify-between">
-                          <Text className="text-white font-['Oswald'] text-lg capitalize">
+                        <View
+                          className={`items-center justify-center w-10 bg-[#F0B90B] border-r ${
+                            selectedPlan === plan.id
+                              ? "border-gray-700"
+                              : "border-[#1E2026]"
+                          }`}
+                        >
+                          <Text
+                            numberOfLines={1}
+                            className="text-white font-['Oswald'] whitespace-nowrap text-base capitalize -rotate-90"
+                          >
                             {plan.name}
                           </Text>
-                          <Text className="text-white font-['Oswald'] text-base capitalize">
-                            {plan.plan_type === "fixed"
-                              ? `Days: ${plan.days}`
-                              : ""}
-                          </Text>
                         </View>
-                        <View className="flex-row items-center justify-between">
-                          <Text className="text-white font-['Oswald'] text-lg capitalize">
-                            profit: {plan.profit}
-                          </Text>
-                          <Text className="text-white font-['Oswald'] text-base capitalize">
-                            penalty: {plan.penalty}
-                          </Text>
+                        <View className="flex-row justify-between flex-1 p-2">
+                          <View className="justify-between">
+                            <View className="flex-row ">
+                              <Text
+                                className={`font-['Oswald200'] text-base mr-2 ${
+                                  selectedPlan === plan.id
+                                    ? "text-gray-900 "
+                                    : "text-gray-400 "
+                                }`}
+                              >
+                                Profit:
+                              </Text>
+                              <Text
+                                className={`font-['Oswald'] text-base ${
+                                  selectedPlan === plan.id
+                                    ? "text-gray-900"
+                                    : "text-white"
+                                }`}
+                              >
+                                {plan.profit}
+                              </Text>
+                            </View>
+                            <View className="flex-row ">
+                              <Text
+                                className={`font-['Oswald200'] text-base mr-2 ${
+                                  selectedPlan === plan.id
+                                    ? "text-gray-900 "
+                                    : "text-gray-400 "
+                                }`}
+                              >
+                                Penalty:
+                              </Text>
+                              <Text
+                                className={`font-['Oswald'] text-base ${
+                                  selectedPlan === plan.id
+                                    ? "text-gray-900"
+                                    : "text-white"
+                                }`}
+                              >
+                                {plan.penalty}
+                              </Text>
+                            </View>
+                          </View>
+                          <View className="flex-row items-center justify-center">
+                            {plan.plan_type === "fixed" && (
+                              <CircularProgress
+                                value={plan?.days}
+                                radius={30}
+                                duration={1500}
+                                progressValueColor={"#fefefe"}
+                                activeStrokeWidth={2}
+                                inActiveStrokeWidth={2}
+                                activeStrokeColor={
+                                  selectedPlan === plan.id
+                                    ? "#70694C"
+                                    : "#F0B90B"
+                                }
+                                maxValue={plan?.days}
+                                title={"DAYS"}
+                                titleColor={"white"}
+                                titleStyle={{
+                                  fontSize: 7,
+                                  fontFamily: "Oswald",
+                                }}
+                                progressValueStyle={{
+                                  fontWeight: "100",
+                                  fontFamily: "Oswald",
+                                }}
+                              />
+                            )}
+                          </View>
                         </View>
                       </View>
                     </Pressable>
@@ -171,28 +278,128 @@ function DepositScreen({ route, navigation }) {
                 step >= 3 ? "bg-[#F0B90B]" : "bg-gray-600"
               }`}
             >
-              <Text className="text-white self-center font-['Oswald']">3</Text>
+              <Text className="text-white self-center font-['Oswald'] leading-5">
+                3
+              </Text>
             </View>
             {/* <View className="grow w-[1px] bg-white self-center m-1" /> */}
           </View>
           <View className="p-2 shrink grow items-stretch bg-[#1E2026] rounded-xl mb-2 mx-1">
             <View className="px-2">
-              <Text className="font-['Oswald'] text-white text-base">
+              <Text className="font-['Oswald'] text-white text-base mb-4">
                 Deposit
               </Text>
+
               <View className={step === 3 ? "h-auto" : "h-0 overflow-hidden"}>
-                <Text className="text-white">step 3 content</Text>
-                {/* <CustomImagePicker /> */}
+                <View>
+                  <Text className="text-gray-400 font-['Oswald300']">
+                    Wallet Address To Deposit (TRC20)
+                  </Text>
+                  <View className="flex-row gap-1">
+                    <ScrollView
+                      horizontal
+                      showsVerticalScrollIndicator={false}
+                      showsHorizontalScrollIndicator={false}
+                      className="h-8 rounded bg-gray-700 flex-1"
+                    >
+                      <View className="justify-center">
+                        <Text
+                          numberOfLines={1}
+                          className="text-gray-400 font-['Oswald'] px-2 whitespace-nowrap leading-5"
+                        >
+                          {DEPOSIT_WALLET_ADDRESS}
+                        </Text>
+                      </View>
+                    </ScrollView>
+                    <TouchableOpacity
+                      onPress={handleCopyWalletAddress}
+                      className="h-8 w-8 rounded bg-gray-700 items-center justify-center"
+                    >
+                      <Feather name="copy" size={18} color="#70694C" />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <View className="mt-3">
+                  <Text className="text-gray-400 font-['Oswald300']">
+                    Deposit Amount
+                  </Text>
+                  <View className="flex-row gap-1">
+                    <View className="h-8 rounded bg-gray-700 flex-1 justify-center">
+                      <Text
+                        numberOfLines={1}
+                        className="text-gray-400 font-['Oswald'] px-2 whitespace-nowrap leading-5"
+                      >
+                        {amount}
+                      </Text>
+                    </View>
+
+                    <TouchableOpacity
+                      onPress={handleGoToStep1}
+                      className="h-8 w-8 rounded bg-gray-700 items-center justify-center"
+                    >
+                      <Feather name="edit" size={18} color="#70694C" />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <View className="mt-3">
+                  <Text className="text-gray-400 font-['Oswald300']">
+                    Transaction Id
+                  </Text>
+                  <View className="flex-row gap-1">
+                    <ScrollView
+                      horizontal
+                      showsVerticalScrollIndicator={false}
+                      showsHorizontalScrollIndicator={false}
+                      className="h-8 rounded bg-gray-700 flex-1"
+                    >
+                      <View className="justify-center flex-1 w-full">
+                        <TextInput
+                          numberOfLines={1}
+                          // placeholder="Transaction Id"
+                          placeholderTextColor="#666"
+                          className="text-white font-['Oswald'] px-2 whitespace-nowrap leading-5"
+                          value={transaction_id}
+                          onChange={setTransactionId}
+                        />
+                      </View>
+                    </ScrollView>
+                    <TouchableOpacity
+                      onPress={handlePasteTransactionId}
+                      className="h-8 w-8 rounded bg-gray-700 items-center justify-center"
+                    >
+                      <Octicons name="paste" size={18} color="#70694C" />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <View className="mt-3">
+                  <Text className="text-gray-400 font-['Oswald300']">
+                    Transaction Screenshot (JPG, PNG or GIF)
+                  </Text>
+
+                  <ImagePicker onChange={handleImagePicked} />
+                </View>
+
+                <View className="flex-row mt-10">
+                  <View className="mr-3">
+                    <StepButton label={"Back"} onPress={handleGoToStep2} />
+                  </View>
+                  <StepButton
+                    label={"Submit"}
+                    onPress={handleSubmitSeposit}
+                    disabled={isGettingPlans || !transaction_id || !image}
+                    isLoading={isGettingPlans}
+                  />
+                </View>
               </View>
             </View>
           </View>
         </View>
       </ScrollView>
-      <StepButton
+      {/* <StepButton
         label={"Logout"}
         onPress={logOut}
         // disabled={isGettingPlans || !amount}
-      />
+      /> */}
     </View>
   );
 }

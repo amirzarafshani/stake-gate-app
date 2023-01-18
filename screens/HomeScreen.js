@@ -21,6 +21,7 @@ import * as Clipboard from "expo-clipboard";
 import CanadaFleg from "../src/assets/svg/canadaFleg";
 import UsdtIcon from "../src/assets/svg/usdtIcon";
 import SimpleLogo from "../src/assets/svg/SimpleLogo";
+import { VictoryPie } from "victory-native";
 
 const fetchData = (token) => {
   return axios.get(`${BASE_URL}/profile`, {
@@ -38,6 +39,7 @@ export default function ExpensesScreen({ navigation }) {
     total_amount: 0,
     total_profit: 0,
   });
+  const [graphicData, setGraphicData] = useState(defaultGraphicData);
   const [lastPageReached, setLastPageReached] = useState(false);
   // let [fontsLoaded] = useFonts({
   //   Oswald_400Regular,
@@ -57,6 +59,11 @@ export default function ExpensesScreen({ navigation }) {
     if (!data) return;
     // console.log(data.data);
     setUserData(data.data);
+    const wantedGraphicData = [
+      { x: "Total Assets", y: data.data?.total_amount * 1000 },
+      { x: "Total Profits", y: data.data?.total_profit },
+    ];
+    setGraphicData(wantedGraphicData);
     //   let meta = data?.pages[data?.pages?.length - 1]?.data?.meta;
 
     //   if (meta.current_page === meta.last_page) {
@@ -195,7 +202,43 @@ export default function ExpensesScreen({ navigation }) {
 
         <DashboardBg />
       </View>
-      <View className="flex-1 relative pt-10"></View>
+      <View className="flex-1 relative pt-10">
+        <View
+          style={{
+            justifyContent: "center",
+            width: (Dimensions.get("screen").width * 50) / 100,
+          }}
+        >
+          <VictoryPie
+            animate={{
+              duration: 2000,
+            }}
+            width="200"
+            colorScale={colors}
+            data={graphicData}
+            innerRadius={30}
+            style={{
+              data: {
+                fillOpacity: 0.9,
+                stroke: "#fff",
+                strokeWidth: 2,
+              },
+              labels: {
+                fill: "#fff",
+              },
+            }}
+          />
+        </View>
+      </View>
     </View>
   );
 }
+
+const graphicColor = ["#EABA4C", "#787885", "#212121"]; // Colors
+// const wantedGraphicData = [{ y: 10 }, { y: 50 }, { y: 40 }]; // Data that we want to display
+
+// const defaultGraphicData = [{ y: 0 }, { y: 0 }, { y: 100 }];
+const defaultGraphicData = [
+  { x: "Total Assets", y: 0 },
+  { x: "Total Profits", y: 0 },
+];

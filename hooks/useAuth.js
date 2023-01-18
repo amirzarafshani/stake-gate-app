@@ -6,14 +6,17 @@ import { BASE_URL } from "../config";
 const authContextDefaultValues = {
   userToken: null,
   login: (email, password) => {},
+  register: (email, password) => {},
   logOut: () => {},
   isLoading: false,
+  isRegistering: false,
 };
 
 const AuthContext = createContext(authContextDefaultValues);
 
 export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
   const [userToken, setUserToken] = useState(null);
 
   useEffect(() => {
@@ -55,6 +58,41 @@ export const AuthProvider = ({ children }) => {
       });
   }
 
+  function register(email, password) {
+    setIsRegistering(true);
+    console.log({
+      email,
+      password,
+    });
+
+    axios
+      .post(
+        `${BASE_URL}/auth/register`,
+        {
+          email,
+          password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      )
+      .then((res) => {
+        const { data } = res;
+        // console.log(data.token);
+        setUserToken(data.token);
+        AsyncStorage.setItem("userToken", data.token);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setIsRegistering(false);
+      });
+  }
+
   async function logOut() {
     setUserToken(null);
     await AsyncStorage.removeItem("userToken");
@@ -70,7 +108,9 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {}
   };
   return (
-    <AuthContext.Provider value={{ login, logOut, isLoading, userToken }}>
+    <AuthContext.Provider
+      value={{ login, logOut, isLoading, register, isRegistering, userToken }}
+    >
       {children}
     </AuthContext.Provider>
   );

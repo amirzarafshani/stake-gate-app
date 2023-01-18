@@ -8,28 +8,38 @@ import React from "react";
 
 export default function Button({ label, onPress, disabled, isLoading }) {
   return (
-    <TouchableOpacity disabled={disabled} onPress={onPress}>
+    <TouchableOpacity
+      disabled={disabled}
+      onPress={onPress}
+      style={styles(disabled).buttonStyle}
+    >
       {isLoading ? (
         <ActivityIndicator />
       ) : (
-        <Text style={styles.textStyle}>{label}</Text>
+        <Text style={styles(disabled).textStyle}>{label}</Text>
       )}
     </TouchableOpacity>
   );
 }
 
-const styles = StyleSheet.create({
-  textStyle: {
-    color: "#fff",
-    fontFamily: "Oswald",
-    fontSize: 16,
-    justifyContent: "center",
-    textAlign: "center",
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    width: "100%",
-    backgroundColor: "#F0B90B",
-    borderRadius: 30,
-    alignSelf: "flex-start",
-  },
-});
+const styles = (disabled) =>
+  StyleSheet.create({
+    buttonStyle: {
+      justifyContent: "center",
+      textAlign: "center",
+      paddingVertical: 3,
+      paddingHorizontal: 10,
+      width: "100%",
+      backgroundColor: disabled ? "#493E20" : "#F0B90B",
+      borderRadius: 30,
+      alignSelf: "flex-start",
+      height: 45,
+    },
+    textStyle: {
+      color: disabled ? "#70694C" : "#fff",
+      fontFamily: "Oswald",
+      fontSize: 16,
+      justifyContent: "center",
+      textAlign: "center",
+    },
+  });

@@ -13,7 +13,7 @@ import Logo from "../src/assets/svg/Logo";
 export default function RegisterScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useAuth();
+  const { register, isRegistering } = useAuth();
   const navigation = useNavigation();
 
   return (
@@ -65,11 +65,13 @@ export default function RegisterScreen() {
         </View>
 
         <Button
+          disabled={isRegistering}
           label={"Register"}
           onPress={() => {
-            login(email, password);
+            register(email, password);
           }}
           className="bg-[#F0B90B] w-full"
+          isLoading={isRegistering}
         />
       </View>
 
