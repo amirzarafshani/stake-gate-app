@@ -5,6 +5,8 @@
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
+    "build": "eas build -p android",
+    "doctor": "expo-cli doctor",
     "ios": "expo start --ios",
     "web": "expo start --web"
   },

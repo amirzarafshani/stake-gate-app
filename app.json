@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "crypto-tracker",
-    "slug": "crypto-tracker",
+    "name": "diamond-gate",
+    "slug": "diamond-gate",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,7 +14,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -22,10 +24,17 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.behzad.diamondgate"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a7ede51e-ed5a-4150-826f-22165ad34500"
+      }
+    },
+    "owner": "amirzarafshani"
   }
 }
