@@ -60,7 +60,7 @@ export default function AssetsScreen({ navigation }) {
 
     let items = data?.pages[data?.pages?.length - 1]?.data?.items;
     // console.log(data?.pages);
-    if (items.current_page === items.total_pages) {
+    if (items?.current_page === items?.total_pages) {
       setLastPageReached(true);
     }
 
@@ -95,7 +95,7 @@ export default function AssetsScreen({ navigation }) {
             <RenderData item={item} navigation={navigation} />
           )}
           keyExtractor={(item, index) => {
-            return item.id;
+            return item?.id;
           }}
           className="w-full"
         />
@@ -127,14 +127,14 @@ export const RenderData = memo(({ item, navigation }) => {
       <View className="w-full items-center justify-between flex-row">
         <View className="flex-1 items-start">
           <CircularProgress
-            value={item.remaining}
+            value={item?.remaining}
             radius={35}
             duration={1500}
             progressValueColor={"#fefefe"}
             activeStrokeWidth={2}
             inActiveStrokeWidth={2}
             activeStrokeColor={"#F0B90B"}
-            maxValue={item.plan?.days}
+            maxValue={item?.plan?.days}
             title={"DAYS LEFT"}
             titleColor={"white"}
             titleStyle={{ fontSize: 7, fontFamily: "Oswald" }}
@@ -167,14 +167,14 @@ export const RenderData = memo(({ item, navigation }) => {
             Staked at:
           </Text>
           <Text className="text-[#fefefe] text-sm font-['Oswald']">
-            {item.staked_at}
+            {item?.staked_at}
           </Text>
         </View>
         <StepButton
           label={"Release"}
           onPress={() => {
             navigation.navigate("Release", {
-              asset_id: item.id,
+              asset_id: item?.id,
             });
           }}
         />

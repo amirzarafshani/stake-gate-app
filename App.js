@@ -60,6 +60,7 @@ import ReferralsScreen from "./screens/ReferralsScreen";
 // } from "@expo-google-fonts/oswald";
 
 import { LogBox } from "react-native";
+import ReleaseScreen from "./screens/ReleaseScreen";
 LogBox.ignoreLogs(["new NativeEventEmitter"]);
 
 const Stack = createNativeStackNavigator();
@@ -183,6 +184,7 @@ const BottomTabNavigator = ({ navigation }) => {
         tabBarShowLabel: false,
         headerStyle: { backgroundColor: "#1E2026" },
         headerTintColor: "#fff",
+        headerTitleStyle: { fontFamily: "Oswald" },
       }}
       tabBar={(props) => <AnimatedTabBar {...props} />}
     >
@@ -306,6 +308,11 @@ const AssetsStackScreen = () => {
         }}
       />
       {/* <AssetsStack.Screen name="Deposit" component={DepositScreen} /> */}
+      <AssetsStack.Screen
+        name="Release"
+        component={ReleaseScreen}
+        options={{ headerTitle: "Release Request" }}
+      />
     </AssetsStack.Navigator>
   );
 };

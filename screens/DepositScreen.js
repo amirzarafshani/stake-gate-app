@@ -7,6 +7,7 @@ import {
   Pressable,
   TouchableOpacity,
   TextInput,
+  ToastAndroid,
 } from "react-native";
 import Constants from "expo-constants";
 import useAuth from "../hooks/useAuth";
@@ -30,6 +31,7 @@ function DepositScreen({ route, navigation }) {
   const [plans, setPlans] = useState(undefined);
   const [selectedPlan, setSelectedPlan] = useState(undefined);
   const [isGettingPlans, setIsGettingPlans] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { userToken } = useAuth();
 
   const handleGetPlans = async () => {
@@ -85,7 +87,43 @@ function DepositScreen({ route, navigation }) {
     setTransactionId(text);
   };
 
-  const handleSubmitSeposit = () => {};
+  const handleSubmitDeposit = () => {
+    setIsSubmitting(true);
+    console.log(userToken);
+    var formData = new FormData();
+    formData.append("amount", amount);
+    formData.append("action", "deposit");
+    formData.append("transaction_id", transaction_id);
+    formData.append("plan_id", selectedPlan);
+
+    let localUri = image;
+    let filename = localUri.split("/").pop();
+    let match = /\.(\w+)$/.exec(filename);
+    let type = match ? `image/${match[1]}` : `image`;
+
+    formData.append("image", { uri: localUri, name: filename, type });
+
+    axios
+      .post(`${BASE_URL}/assets`, formData, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => {
+        ToastAndroid.show(
+          "Your deposit request has successfully submited!",
+          ToastAndroid.SHORT
+        );
+        navigation.navigate("Home");
+      })
+      .catch((err) => {
+        console.log({ err });
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
+  };
 
   return (
     <View style={styles.container}>
@@ -385,9 +423,9 @@ function DepositScreen({ route, navigation }) {
                   </View>
                   <StepButton
                     label={"Submit"}
-                    onPress={handleSubmitSeposit}
-                    disabled={isGettingPlans || !transaction_id || !image}
-                    isLoading={isGettingPlans}
+                    onPress={handleSubmitDeposit}
+                    disabled={isSubmitting || !transaction_id || !image}
+                    isLoading={isSubmitting}
                   />
                 </View>
               </View>

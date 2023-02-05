@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, ActivityIndicator } from "react-native";
 import {
   useFonts,
   Oswald_200ExtraLight as Oswald200,
@@ -9,6 +9,7 @@ import {
 import useAuth from "../hooks/useAuth";
 import axios from "axios";
 import { BASE_URL } from "../config";
+import SimpleLogo from "../src/assets/svg/SimpleLogo";
 
 const SplashScreen = (props) => {
   const [authLoaded, setAuthLoaded] = useState(0);
@@ -62,7 +63,13 @@ const SplashScreen = (props) => {
 
   return (
     <View style={styles.root}>
-      <Text className="text-white">Splash Screen</Text>
+      <View className="h-32 w-32">
+        <SimpleLogo />
+      </View>
+      <View className="flex-row items-center gap-2 mt-4">
+        <ActivityIndicator color="#000" />
+        <Text className="text-base text-black">Loading...</Text>
+      </View>
     </View>
   );
 };
@@ -72,6 +79,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#EABA4C",
   },
 });
 

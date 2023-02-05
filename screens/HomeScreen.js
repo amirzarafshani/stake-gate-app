@@ -176,7 +176,11 @@ export default function ExpensesScreen({ navigation }) {
           </View>
         </View>
         <View className="w-full flex-row items-center justify-evenly">
-          <Pressable>
+          <Pressable
+            onPress={() => {
+              navigation.navigate("Assets");
+            }}
+          >
             <Icon name="minuscircleo" size={35} color="#E12028" />
           </Pressable>
           <Text
@@ -191,7 +195,6 @@ export default function ExpensesScreen({ navigation }) {
             </View>
           </Text>
           <Pressable
-            className="bg-[#F0B90B] rounded-full text-white px-3 py-1"
             onPress={() => {
               navigation.navigate("Deposit");
             }}
@@ -202,10 +205,10 @@ export default function ExpensesScreen({ navigation }) {
 
         <DashboardBg />
       </View>
-      <View className="flex-1 relative pt-10">
+      <View className="flex-1 relative pt-10 items-center justify-center">
         <View
+          className="items-center justify-center"
           style={{
-            justifyContent: "center",
             width: (Dimensions.get("screen").width * 50) / 100,
           }}
         >
@@ -213,10 +216,10 @@ export default function ExpensesScreen({ navigation }) {
             animate={{
               duration: 2000,
             }}
-            width="200"
-            colorScale={colors}
+            width={(Dimensions.get("screen").width * 80) / 100}
+            colorScale={["#EABA4C", "#f1e4c7"]}
             data={graphicData}
-            innerRadius={30}
+            innerRadius={90}
             style={{
               data: {
                 fillOpacity: 0.9,
