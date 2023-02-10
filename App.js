@@ -69,7 +69,7 @@ export const Navigation = () => {
   const queryClient = new QueryClient({
     queryCache: new QueryCache({
       onError: (error, query) => {
-        console.log(error?.response?.status);
+        // console.log(error?.response?.status);
         // @ts-ignore
         if (error?.response?.status === 401) {
           logOut();

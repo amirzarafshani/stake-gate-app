@@ -57,8 +57,8 @@ export default function ExpensesScreen({ navigation }) {
 
   useEffect(() => {
     if (!data) return;
-    console.log(data.data?.total_amount);
-    console.log(data.data?.total_profit);
+    // console.log(data.data?.total_amount);
+    // console.log(data.data?.total_profit);
     setUserData(data.data);
     const wantedGraphicData = [
       { x: "Total Assets", y: data.data?.total_amount },
