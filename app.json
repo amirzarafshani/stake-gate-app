@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "diamond-gate",
-    "slug": "diamond-gate",
+    "name": "Diamond Stake",
+    "slug": "diamond-stake",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,9 +14,7 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
@@ -25,7 +23,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.behzad.diamondgate"
+      "package": "com.app.diamondstake"
     },
     "web": {
       "favicon": "./assets/favicon.png"

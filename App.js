@@ -1,12 +1,7 @@
 import React, { useEffect, useReducer, useRef, useState } from "react";
 import { TailwindProvider } from "tailwindcss-react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import {
-  QueryCache,
-  QueryClient,
-  QueryClientProvider,
-  useQuery,
-} from "react-query";
+import { QueryCache, QueryClient, QueryClientProvider } from "react-query";
 import useAuth, { AuthProvider } from "./hooks/useAuth";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
@@ -17,21 +12,15 @@ import {
   View,
   Text,
   ActivityIndicator,
-  Button,
   TouchableOpacity,
 } from "react-native";
 // navigation
-import {
-  DefaultTheme,
-  NavigationContainer,
-  useNavigation,
-} from "@react-navigation/native";
+import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
-import { SafeAreaView } from "react-native-safe-area-context";
 // svg
 import Svg, { Path } from "react-native-svg";
 // reanimated
@@ -74,86 +63,66 @@ navTheme.colors.text = "#fff";
 
 // ------------------------------------------------------------------
 export const Navigation = () => {
-  let { userToken, logOut } = useAuth();
-  const navigationRef = React.useRef();
-  const [noPaddingStatusBar, setNoPaddingStatusBar] = useState(false);
+  let { logOut } = useAuth();
+  const navigationRef = useRef();
 
   const queryClient = new QueryClient({
     queryCache: new QueryCache({
       onError: (error, query) => {
+        console.log(error?.response?.status);
         // @ts-ignore
         if (error?.response?.status === 401) {
           logOut();
+          navigationRef.current?.navigate("Login");
         }
       },
     }),
   });
 
   return (
-    <View
-      style={{
-        flex: 1,
-        paddingTop: noPaddingStatusBar ? 0 : StatusBar.currentHeight,
-        backgroundColor: "#1E2026",
-      }}
+    <NavigationContainer
+      ref={navigationRef}
+      theme={navTheme}
+      options={{ headerTitleStyle: { fontFamily: "Oswald" } }}
     >
-      <NavigationContainer
-        ref={navigationRef}
-        theme={navTheme}
-        options={{ headerTitleStyle: { fontFamily: "Oswald" } }}
-        onStateChange={() => {
-          const currentRouteName =
-            navigationRef.current.getCurrentRoute()?.name;
-          setNoPaddingStatusBar(
-            ["Splash", "Home", "Login", "Register"].includes(currentRouteName)
-          );
-        }}
-        onReady={() => {
-          const currentRouteName =
-            navigationRef.current.getCurrentRoute()?.name;
-          setNoPaddingStatusBar(
-            ["Splash", "Home", "Login", "Register"].includes(currentRouteName)
-          );
-        }}
-      >
-        <QueryClientProvider client={queryClient}>
-          <TailwindProvider>
-            <Stack.Navigator initialRouteName="Splash">
-              <Stack.Screen
-                name="Splash"
-                options={{ animationEnabled: false, header: () => null }}
-                component={SplashScreen}
-              />
-              <Stack.Screen
-                name="Home"
-                options={{ header: () => null }}
-                component={BottomTabNavigator}
-              />
-              <Stack.Screen
-                name="Login"
-                component={LoginScreen}
-                options={{
-                  headerShown: false,
-                  headerLeft: () => false,
-                  gestureEnabled: false,
-                  headerBackVisible: false,
-                }}
-              />
-              <Stack.Screen
-                name="Register"
-                component={RegisterScreen}
-                options={{
-                  headerShown: false,
-                  headerLeft: () => false,
-                  gestureEnabled: false,
-                  headerBackVisible: false,
-                }}
-              />
-            </Stack.Navigator>
-          </TailwindProvider>
-        </QueryClientProvider>
-      </NavigationContainer>
-    </View>
+      <QueryClientProvider client={queryClient}>
+        <TailwindProvider>
+          <Stack.Navigator initialRouteName="Splash">
+            <Stack.Screen
+              name="Splash"
+              options={{ animationEnabled: false, header: () => null }}
+              component={SplashScreen}
+            />
+            <Stack.Screen
+              name="Home"
+              options={{ header: () => null }}
+              component={BottomTabNavigator}
+            />
+            <Stack.Screen
+              name="Login"
+              component={LoginScreen}
+              options={{
+                headerShown: false,
+                headerLeft: () => false,
+                gestureEnabled: false,
+                headerBackVisible: false,
+              }}
+            />
+            <Stack.Screen
+              name="Register"
+              component={RegisterScreen}
+              options={{
+                headerShown: false,
+                headerLeft: () => false,
+                gestureEnabled: false,
+                headerBackVisible: false,
+              }}
+            />
+          </Stack.Navigator>
+        </TailwindProvider>
+      </QueryClientProvider>
+      {/* </View> */}
+    </NavigationContainer>
   );
 };
 
@@ -207,7 +176,7 @@ const BottomTabNavigator = ({ navigation }) => {
         options={{
           headerShown: false,
           tabBarStyle: {
-            backgroundColor: "#000",
+            backgroundColor: "#1E2026",
           },
           // @ts-ignore
           tabBarIcon: ({ ref, active }) => {
@@ -219,6 +188,7 @@ const BottomTabNavigator = ({ navigation }) => {
       <Tab.Screen
         name="Referrals"
         options={{
+          headerStatusBarHeight: StatusBar.currentHeight,
           // @ts-ignore
           tabBarIcon: ({ ref, active }) => {
             return (
@@ -235,6 +205,7 @@ const BottomTabNavigator = ({ navigation }) => {
       <Tab.Screen
         name="Settings"
         options={{
+          headerStatusBarHeight: StatusBar.currentHeight,
           // @ts-ignore
           tabBarIcon: ({ ref, active }) => {
             return (
@@ -277,6 +248,7 @@ const DashboardStackScreen = () => {
         name="Deposit"
         component={DepositScreen}
         options={{
+          headerStatusBarHeight: StatusBar.currentHeight,
           headerTitle: "Deposit Request",
           headerTitleStyle: { fontFamily: "Oswald" },
         }}
@@ -291,9 +263,14 @@ const AssetsStackScreen = () => {
   return (
     <AssetsStack.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: "#1E2026" },
+        headerStyle: {
+          backgroundColor: "#1E2026",
+        },
         headerTintColor: "#fff",
-        headerTitleStyle: { fontFamily: "Oswald" },
+        headerTitleStyle: {
+          fontFamily: "Oswald",
+        },
+        headerStatusBarHeight: StatusBar.currentHeight,
         translucent: true,
       }}
     >
@@ -410,7 +387,7 @@ const AnimatedTabBar = ({
               options={options}
               onLayout={(e) => handleLayout(e, index)}
               onPress={() => {
-                console.log(route.state?.routeNames);
+                // console.log(route.state?.routeNames);
                 if (route.state?.routeNames?.length > 0) {
                   navigation.navigate(route.name, {
                     screen: route.state.routeNames[0],

@@ -83,13 +83,13 @@ function DepositScreen({ route, navigation }) {
 
   const handlePasteTransactionId = async () => {
     const text = await Clipboard.getStringAsync();
-    console.log(text);
+    // console.log(text);
     setTransactionId(text);
   };
 
   const handleSubmitDeposit = () => {
     setIsSubmitting(true);
-    console.log(userToken);
+    // console.log(userToken);
     var formData = new FormData();
     formData.append("amount", amount);
     formData.append("action", "deposit");

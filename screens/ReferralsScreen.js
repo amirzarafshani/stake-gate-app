@@ -5,13 +5,13 @@ import axios from "axios";
 import { useInfiniteQuery } from "react-query";
 // import useAuth from "../hooks/useAuth";
 import { BASE_URL } from "../config";
-import { NativeWindStyleSheet } from "nativewind";
+// import { NativeWindStyleSheet } from "nativewind";
 import useAuth from "../hooks/useAuth";
-import CircularProgress from "react-native-circular-progress-indicator";
-import StepButton from "../components/StepButton";
+// import CircularProgress from "react-native-circular-progress-indicator";
+// import StepButton from "../components/StepButton";
 
 const fetchData = (page, token) => {
-  console.log(page);
+  // console.log(page);
   return axios.get(`${BASE_URL}/referrals?page=${page}&page_size=10`, {
     headers: {
       "Content-Type": "application/json",
@@ -23,7 +23,7 @@ const fetchData = (page, token) => {
 export default function ReferralsScreen({ navigation }) {
   const { userToken } = useAuth();
   const [dataList, setDataList] = useState([]);
-  const [lastPageReached, setLastPageReached] = useState(false);
+  // const [lastPageReached, setLastPageReached] = useState(false);
 
   const {
     data,
@@ -35,7 +35,7 @@ export default function ReferralsScreen({ navigation }) {
     refetch,
     isFetchingNextPage,
   } = useInfiniteQuery(
-    "assets",
+    "referrals",
     async ({ pageParam = 1 }) => await fetchData(pageParam, userToken),
     {
       getNextPageParam: (lastPage, allPages) => {
@@ -58,9 +58,9 @@ export default function ReferralsScreen({ navigation }) {
     if (!data) return;
 
     // let items = data?.pages[data?.pages?.length - 1]?.data;
-    console.log(data?.pages?.flatMap((x) => x.data));
+    // console.log(data?.pages?.flatMap((x) => x.data));
     // if (items.current_page === items.total_pages) {
-    setLastPageReached(true);
+    // setLastPageReached(true);
     // }
 
     setDataList(data?.pages?.flatMap((x) => x.data));
@@ -90,11 +90,9 @@ export default function ReferralsScreen({ navigation }) {
             paddingBottom: 20,
           }}
           ListFooterComponent={isFetchingNextPage ? renderSpinner : null}
-          renderItem={({ item }) => (
-            <RenderData item={item} navigation={navigation} />
-          )}
+          renderItem={({ item }) => <RenderData item={item} />}
           keyExtractor={(item, index) => {
-            return item.id;
+            return item.referral_code;
           }}
           className="w-full"
         />

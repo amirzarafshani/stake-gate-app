@@ -40,19 +40,19 @@ export default function ExpensesScreen({ navigation }) {
     total_profit: 0,
   });
   const [graphicData, setGraphicData] = useState(defaultGraphicData);
-  const [lastPageReached, setLastPageReached] = useState(false);
+  // const [lastPageReached, setLastPageReached] = useState(false);
   // let [fontsLoaded] = useFonts({
   //   Oswald_400Regular,
   // });
 
   const {
     data,
-    isSuccess,
-    isLoading,
-    fetchNextPage,
-    isFetching,
-    isFetchingNextPage,
-    hasNextPage,
+    // isSuccess,
+    // isLoading,
+    // fetchNextPage,
+    // isFetching,
+    // isFetchingNextPage,
+    // hasNextPage,
   } = useQuery("profile", async () => await fetchData(userToken));
 
   useEffect(() => {
@@ -94,6 +94,9 @@ export default function ExpensesScreen({ navigation }) {
         <SafeAreaView className="flex-row items-center justify-between w-full p-5">
           <View className="h-12 w-12">
             <SimpleLogo />
+          </View>
+          <View>
+            <Text className="font-['Oswald'] text-xl">DIAMOND STAKE</Text>
           </View>
           <View
             className="h-12 w-12 rounded-full overflow-hidden bg-[#ec2224]"

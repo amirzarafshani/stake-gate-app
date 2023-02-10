@@ -41,7 +41,7 @@ export default function SettingsScreen({ navigation }) {
 
   useEffect(() => {
     if (!data) return;
-    console.log(data.data?.referral_code);
+    // console.log(data.data?.referral_code);
     setUserData(data.data);
     //   let meta = data?.pages[data?.pages?.length - 1]?.data?.meta;
 

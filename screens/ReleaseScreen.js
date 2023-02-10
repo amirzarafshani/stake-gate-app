@@ -26,7 +26,7 @@ const fetchData = (id, token) => {
 
 function ReleaseScreen({ route, navigation }) {
   const { asset_id } = route.params;
-  const { userToken } = useAuth();
+  const { userToken, logOut } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [address, setAddress] = useState("");
 
@@ -65,6 +65,10 @@ function ReleaseScreen({ route, navigation }) {
       })
       .catch((err) => {
         console.log(err);
+        if (err?.response?.status === 401) {
+          logOut();
+          navigation.navigate("Login");
+        }
       })
       .finally(() => {
         setIsSubmitting(false);
@@ -153,7 +157,7 @@ function ReleaseScreen({ route, navigation }) {
               <View className="flex-row justify-between items-center">
                 <Text className="text-white font-['Oswald']">Amount</Text>
                 <Text className="text-[#fff] text-xl font-['Oswald']">
-                  <Currency symbol=" " quantity={data.data?.amount} />
+                  <Currency symbol=" " quantity={+data.data?.amount} />
                 </Text>
               </View>
               <View className="w-full my-2" />
@@ -162,7 +166,7 @@ function ReleaseScreen({ route, navigation }) {
                 <Text className="text-[#5EA919] text-xl font-['Oswald']">
                   <Currency
                     symbol=" "
-                    quantity={data.data?.calculated_profit}
+                    quantity={+data.data?.calculated_profit}
                   />
                 </Text>
               </View>
@@ -174,7 +178,7 @@ function ReleaseScreen({ route, navigation }) {
                 <Text className="text-[#E12028] text-xl font-['Oswald']">
                   <Currency
                     symbol=" "
-                    quantity={data.data?.calculated_penalty}
+                    quantity={+data.data?.calculated_penalty}
                   />
                 </Text>
               </View>
@@ -185,7 +189,7 @@ function ReleaseScreen({ route, navigation }) {
                   Total Withdrawable
                 </Text>
                 <Text className="text-[#F0B90B] text-xl font-['Oswald']">
-                  <Currency symbol=" " quantity={data.data?.total_release} />
+                  <Currency symbol=" " quantity={+data.data?.total_release} />
                 </Text>
               </View>
             </View>
