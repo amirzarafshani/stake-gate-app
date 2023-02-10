@@ -21,7 +21,7 @@ import * as Clipboard from "expo-clipboard";
 import CanadaFleg from "../src/assets/svg/canadaFleg";
 import UsdtIcon from "../src/assets/svg/usdtIcon";
 import SimpleLogo from "../src/assets/svg/SimpleLogo";
-import { VictoryPie } from "victory-native";
+import { VictoryLabel, VictoryPie, VictoryTooltip } from "victory-native";
 
 const fetchData = (token) => {
   return axios.get(`${BASE_URL}/profile`, {
@@ -57,10 +57,11 @@ export default function ExpensesScreen({ navigation }) {
 
   useEffect(() => {
     if (!data) return;
-    // console.log(data.data);
+    console.log(data.data?.total_amount);
+    console.log(data.data?.total_profit);
     setUserData(data.data);
     const wantedGraphicData = [
-      { x: "Total Assets", y: data.data?.total_amount * 1000 },
+      { x: "Total Assets", y: data.data?.total_amount },
       { x: "Total Profits", y: data.data?.total_profit },
     ];
     setGraphicData(wantedGraphicData);
@@ -216,13 +217,16 @@ export default function ExpensesScreen({ navigation }) {
           }}
         >
           <VictoryPie
+            labelComponent={<VictoryLabel centerOffset={{ x: 25 }} />}
             animate={{
               duration: 2000,
             }}
+            // axisLabelComponent={<VictoryLabel dy={25} />}
             width={(Dimensions.get("screen").width * 80) / 100}
             colorScale={["#EABA4C", "#f1e4c7"]}
             data={graphicData}
-            innerRadius={90}
+            innerRadius={85}
+            labelRadius={150}
             style={{
               data: {
                 fillOpacity: 0.9,
