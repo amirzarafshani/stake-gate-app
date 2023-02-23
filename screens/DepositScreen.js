@@ -251,7 +251,7 @@ function DepositScreen({ route, navigation }) {
                                     : "text-gray-400 "
                                 }`}
                               >
-                                Penalty:
+                                Min Referrals:
                               </Text>
                               <Text
                                 className={`font-['Oswald'] text-base ${
@@ -260,7 +260,7 @@ function DepositScreen({ route, navigation }) {
                                     : "text-white"
                                 }`}
                               >
-                                {plan.penalty}
+                                {plan.min_referrals}
                               </Text>
                             </View>
                           </View>
