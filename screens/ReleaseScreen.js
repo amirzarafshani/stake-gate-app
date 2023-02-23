@@ -7,7 +7,7 @@ import {
   ToastAndroid,
   View,
 } from "react-native";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import InputField from "../components/InputField";
 import { BASE_URL } from "../config";
 import useAuth from "../hooks/useAuth";
@@ -29,6 +29,7 @@ function ReleaseScreen({ route, navigation }) {
   const { userToken, logOut } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [address, setAddress] = useState("");
+  const queryClient = useQueryClient();
 
   const { data, isSuccess, isLoading } = useQuery(
     "asset",
@@ -39,6 +40,8 @@ function ReleaseScreen({ route, navigation }) {
   const handleSubmit = () => {
     setIsSubmitting(true);
 
+    console.log(`${BASE_URL}/releases`);
+    console.log(userToken);
     axios
       .post(
         `${BASE_URL}/releases`,
@@ -60,7 +63,8 @@ function ReleaseScreen({ route, navigation }) {
           "Your release request has successfully submited!",
           ToastAndroid.SHORT
         );
-
+        queryClient.invalidateQueries("assets");
+        queryClient.invalidateQueries("profile");
         navigation.navigate("Assets");
       })
       .catch((err) => {
@@ -87,7 +91,7 @@ function ReleaseScreen({ route, navigation }) {
             Plan: {data.data?.plan?.name}
           </Text>
           <Text className="text-white font-['Oswald']">
-            Days: {data.data?.plan?.days}
+            Min Referrals: {data.data?.plan?.min_referrals}
           </Text>
         </View>
         <View className="w-full my-3" />
@@ -100,7 +104,7 @@ function ReleaseScreen({ route, navigation }) {
           </Text>
         </View>
         <View className="w-full my-3" />
-        <View className="flex-row items-center justify-between">
+        {/* <View className="flex-row items-center justify-between">
           <Text className="text-white font-['Oswald']">
             Remaining: {data.data?.remaining} days
           </Text>
@@ -108,16 +112,16 @@ function ReleaseScreen({ route, navigation }) {
             Penalty: {data.data?.plan?.penalty}
           </Text>
         </View>
-        <View className="w-full my-3" />
+        <View className="w-full my-3" /> */}
 
         <View
-          className="relative h-64 items-center"
+          className="relative h-56 items-center"
           style={{ position: "relative" }}
         >
           <View
             style={{
               width: (Dimensions.get("screen").width * 90) / 100,
-              height: 220,
+              height: 200,
               position: "absolute",
               zIndex: 1,
               bottom: 0,
@@ -130,7 +134,7 @@ function ReleaseScreen({ route, navigation }) {
           <View
             style={{
               width: (Dimensions.get("screen").width * 90) / 100,
-              height: 220,
+              height: 190,
               position: "absolute",
               zIndex: 2,
               bottom: 10,
@@ -143,7 +147,7 @@ function ReleaseScreen({ route, navigation }) {
           <View
             style={{
               width: (Dimensions.get("screen").width * 90) / 100,
-              height: 220,
+              height: 175,
               position: "absolute",
               zIndex: 3,
               bottom: 20,
@@ -170,8 +174,8 @@ function ReleaseScreen({ route, navigation }) {
                   />
                 </Text>
               </View>
-              <View className="w-full my-2" />
-              <View className="flex-row justify-between items-center">
+              {/* <View className="w-full my-2" /> */}
+              {/* <View className="flex-row justify-between items-center">
                 <Text className="text-white font-['Oswald']">
                   Total Penalty
                 </Text>
@@ -181,7 +185,7 @@ function ReleaseScreen({ route, navigation }) {
                     quantity={+data.data?.calculated_penalty}
                   />
                 </Text>
-              </View>
+              </View> */}
 
               <View className="w-full border-b-2 border-gray-500 my-4" />
               <View className="flex-row justify-between items-center">

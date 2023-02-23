@@ -12,6 +12,9 @@ import StepButton from "../components/StepButton";
 import * as Clipboard from "expo-clipboard";
 import Icon from "react-native-vector-icons/AntDesign";
 import Feather from "react-native-vector-icons/Feather";
+import DepositIcon from "../src/assets/svg/transactions/DepositIcon";
+import WithdrawIcon from "../src/assets/svg/transactions/WithdrawIcon";
+import ReferralIcon from "../src/assets/svg/transactions/ReferralIcon";
 
 const fetchData = (token) => {
   return axios.get(`${BASE_URL}/profile`, {
@@ -65,7 +68,7 @@ export default function SettingsScreen({ navigation }) {
       {isLoading ? (
         <ActivityIndicator />
       ) : (
-        <View className="mb-40">
+        <View className="mb-40 h-full">
           <View className="flex-row items-center bg-[#1E2026] mx-5 rounded-xl">
             <View className="w-20 items-center justify-center">
               <Icon name="user" size={45} color="#c99" />
@@ -99,16 +102,36 @@ export default function SettingsScreen({ navigation }) {
             refreshControl={
               <RefreshControl refreshing={isLoading} onRefresh={refetch} />
             }
+            contentContainerStyle={
+              userData?.transactions?.length > 0
+                ? {
+                    paddingRight: 20,
+                    paddingLeft: 20,
+                    paddingBottom: 20,
+                  }
+                : {
+                    flexGrow: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }
+            }
+            ListHeaderComponent={
+              !userData?.transactions?.length ? (
+                <View className="flex-1 items-center justify-center">
+                  <Text className="text-white">No Records!</Text>
+                </View>
+              ) : null
+            }
             pagingEnabled={true}
             legacyImplementation={false}
             data={userData?.transactions}
             // onEndReached={loadMore}
             onEndReachedThreshold={0.3}
-            contentContainerStyle={{
-              paddingRight: 20,
-              paddingLeft: 20,
-              paddingBottom: 20,
-            }}
+            // contentContainerStyle={{
+            //   paddingRight: 20,
+            //   paddingLeft: 20,
+            //   paddingBottom: 20,
+            // }}
             ListFooterComponent={isFetchingNextPage ? renderSpinner : null}
             renderItem={({ item }) => (
               <RenderData item={item} navigation={navigation} />
@@ -127,23 +150,33 @@ export default function SettingsScreen({ navigation }) {
 export const RenderData = memo(({ item }) => {
   return (
     <View className="w-full rounded-md mb-1.5 p-3 bg-[#1E2026]">
-      <View className="flex-row items-center justify-between border-b border-gray-700 pb-3 mb-3">
-        <View className="whitespace-nowrap items-baseline">
-          <Text className="text-[#fefefe] text-sm font-['Oswald300']">
-            {item.action}
-          </Text>
+      <View>
+        <View className="flex-row items-center justify-between border-b border-gray-700 pb-4 mb-2">
+          <View className="flex-row items-center gap-3">
+            {item.action === "deposit" && <DepositIcon />}
+            {item.action === "withdraw" && <WithdrawIcon />}
+            {item.action === "referral" && <ReferralIcon />}
+            <View className="whitespace-nowrap items-baseline ">
+              <Text className="text-[#fefefe] text-sm font-['Oswald300'] capitalize">
+                {item.action}
+              </Text>
+              <Text className="text-gray-400 text-sm font-['Oswald300']">
+                ({item.status})
+              </Text>
+            </View>
+          </View>
+          <View className="whitespace-nowrap items-start h-full">
+            <Text className="text-[#fefefe] text-xs font-['Oswald300'] self-end">
+              {item.created_at}
+            </Text>
+          </View>
         </View>
-        <View className="whitespace-nowrap items-baseline">
-          <Text className="text-[#fefefe] text-xs font-['Oswald300'] self-end">
-            {item.created_at}
-          </Text>
-        </View>
-      </View>
-      <View className="w-full items-center justify-between flex-row">
-        <View className="flex-1 justify-start ">
-          <Text className="text-[#fefefe] text-lg font-['Oswald300']">
-            {item.description}
-          </Text>
+        <View className="w-full items-center justify-between flex-row">
+          <View className="flex-1 justify-start ">
+            <Text className="text-gray-400 text-md font-['Oswald300']">
+              {item.description}
+            </Text>
+          </View>
         </View>
       </View>
     </View>

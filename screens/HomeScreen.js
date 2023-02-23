@@ -1,16 +1,16 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dimensions,
   Pressable,
+  RefreshControl,
   Text,
-  Touchable,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Modal from "react-native-modal";
 import { FlatList, ActivityIndicator } from "react-native";
 import axios from "axios";
-import { useInfiniteQuery, useQuery } from "react-query";
+import { useQuery } from "react-query";
 import Icon from "react-native-vector-icons/AntDesign";
 import Currency from "react-currency-formatter";
 import { BASE_URL } from "../config";
@@ -21,7 +21,8 @@ import * as Clipboard from "expo-clipboard";
 import CanadaFleg from "../src/assets/svg/canadaFleg";
 import UsdtIcon from "../src/assets/svg/usdtIcon";
 import SimpleLogo from "../src/assets/svg/SimpleLogo";
-import { VictoryLabel, VictoryPie, VictoryTooltip } from "victory-native";
+// import { VictoryLabel, VictoryPie, VictoryTooltip } from "victory-native";
+import { RenderData } from "./SettingsScreen";
 
 const fetchData = (token) => {
   return axios.get(`${BASE_URL}/profile`, {
@@ -34,51 +35,55 @@ const fetchData = (token) => {
 };
 
 export default function ExpensesScreen({ navigation }) {
+  const [isModalVisible, setModalVisible] = useState(false);
   const { userToken } = useAuth();
   const [userData, setUserData] = useState({
     total_amount: 0,
     total_profit: 0,
   });
-  const [graphicData, setGraphicData] = useState(defaultGraphicData);
+  // const [graphicData, setGraphicData] = useState(defaultGraphicData);
   // const [lastPageReached, setLastPageReached] = useState(false);
   // let [fontsLoaded] = useFonts({
   //   Oswald_400Regular,
   // });
 
+  const hideModal = () => {
+    setModalVisible(false);
+  };
+
+  const renderSpinner = () => {
+    return <ActivityIndicator color="emerald.500" />;
+  };
+
   const {
     data,
     // isSuccess,
-    // isLoading,
+    isLoading,
+    refetch,
     // fetchNextPage,
     // isFetching,
-    // isFetchingNextPage,
+    isFetchingNextPage,
     // hasNextPage,
   } = useQuery("profile", async () => await fetchData(userToken));
 
   useEffect(() => {
     if (!data) return;
-    // console.log(data.data?.total_amount);
+    console.log(data.data);
     // console.log(data.data?.total_profit);
     setUserData(data.data);
-    const wantedGraphicData = [
-      { x: "Total Assets", y: data.data?.total_amount },
-      { x: "Total Profits", y: data.data?.total_profit },
-    ];
-    setGraphicData(wantedGraphicData);
-    //   let meta = data?.pages[data?.pages?.length - 1]?.data?.meta;
-
-    //   if (meta.current_page === meta.last_page) {
-    //     setLastPageReached(true);
-    //   }
-
-    //   setDataList(data?.pages?.flatMap((x) => x.data.data));
+    // const wantedGraphicData = [
+    //   { x: "Invested Amount", y: data.data?.total_amount },
+    //   { x: "Asset Profits", y: data.data?.total_profit },
+    //   { x: "Referral Profits", y: data.data?.referral_credits },
+    // ];
+    // setGraphicData(wantedGraphicData);
   }, [data]);
 
   const copyToClipboard = async (val) => {
     await Clipboard.setStringAsync(val);
   };
 
-  const colors = ["#f1e4c7", "#E5E8ED", "#F3F4F6"];
+  // const colors = ["#f1e4c7", "#E5E8ED", "#F3F4F6"];
 
   return !true ? (
     <ActivityIndicator />
@@ -89,7 +94,7 @@ export default function ExpensesScreen({ navigation }) {
         className="bg-[#EABA4C] flex-1 items-center justify-between pb-7 relative"
         style={{
           position: "relative",
-          maxHeight: Dimensions.get("screen").height / 2,
+          maxHeight: Dimensions.get("screen").height / 3.2,
         }}
       >
         <SafeAreaView className="flex-row items-center justify-between w-full p-5">
@@ -116,7 +121,7 @@ export default function ExpensesScreen({ navigation }) {
             <CanadaFleg />
           </View>
         </SafeAreaView>
-        <View
+        {/* <View
           className="relative h-32 items-center"
           style={{ position: "relative" }}
         >
@@ -178,26 +183,40 @@ export default function ExpensesScreen({ navigation }) {
               </View>
             </View>
           </View>
-        </View>
+        </View> */}
         <View className="w-full flex-row items-center justify-evenly">
           <Pressable
             onPress={() => {
-              navigation.navigate("Assets");
+              // console.log(navigation.navigate("AssetsStack"));
+              navigation.navigate("AssetsStack");
             }}
           >
             <Icon name="minuscircleo" size={35} color="#E12028" />
           </Pressable>
-          <Text
-            className="flex-row items-center"
-            style={{ fontFamily: "Oswald" }}
+          <Pressable
+            onPress={() => {
+              setModalVisible(true);
+            }}
           >
-            <Text className="text-white text-4xl flex-row justify-end items-end">
-              <Currency symbol="" quantity={userData.total_amount} />
+            <Text
+              className="flex-row items-center"
+              style={{ fontFamily: "Oswald" }}
+            >
+              <Text className="text-white text-4xl flex-row justify-end items-end">
+                <Currency
+                  symbol=""
+                  quantity={
+                    userData.total_amount +
+                    userData.referral_credits +
+                    userData.total_profit
+                  }
+                />
+              </Text>
+              <View className="h-5 w-5 pl-0.5">
+                <UsdtIcon />
+              </View>
             </Text>
-            <View className="h-5 w-5 pl-0.5">
-              <UsdtIcon />
-            </View>
-          </Text>
+          </Pressable>
           <Pressable
             onPress={() => {
               navigation.navigate("Deposit");
@@ -209,8 +228,58 @@ export default function ExpensesScreen({ navigation }) {
 
         <DashboardBg />
       </View>
-      <View className="flex-1 relative pt-10 items-center justify-center">
-        <View
+      <View className="flex-1 relative pt-5 items-center ">
+        <View className="w-full h-full">
+          <View className="border-b border-gray-600 py-3 mx-5 my-3">
+            <Text className="text-white font-['Oswald']">
+              Recent Transactions
+            </Text>
+          </View>
+          <FlatList
+            refreshControl={
+              <RefreshControl refreshing={isLoading} onRefresh={refetch} />
+            }
+            contentContainerStyle={
+              userData?.transactions?.length > 0
+                ? {
+                    paddingRight: 20,
+                    paddingLeft: 20,
+                    paddingBottom: 20,
+                  }
+                : {
+                    flexGrow: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }
+            }
+            ListHeaderComponent={
+              !userData?.transactions?.length ? (
+                <View className="flex-1 items-center justify-center">
+                  <Text className="text-white">No Records!</Text>
+                </View>
+              ) : null
+            }
+            pagingEnabled={true}
+            legacyImplementation={false}
+            data={userData?.transactions?.slice(0, 3)}
+            // onEndReached={loadMore}
+            onEndReachedThreshold={0.3}
+            // contentContainerStyle={{
+            //   paddingRight: 20,
+            //   paddingLeft: 20,
+            //   paddingBottom: 20,
+            // }}
+            ListFooterComponent={isFetchingNextPage ? renderSpinner : null}
+            renderItem={({ item }) => (
+              <RenderData item={item} navigation={navigation} />
+            )}
+            keyExtractor={(item, index) => {
+              return item.id;
+            }}
+            className="w-full"
+          />
+        </View>
+        {/* <View
           className="items-center justify-center"
           style={{
             width: (Dimensions.get("screen").width * 50) / 100,
@@ -223,7 +292,7 @@ export default function ExpensesScreen({ navigation }) {
             }}
             // axisLabelComponent={<VictoryLabel dy={25} />}
             width={(Dimensions.get("screen").width * 80) / 100}
-            colorScale={["#EABA4C", "#f1e4c7"]}
+            colorScale={["#EABA4C", "#5EA919", "#f1e4c7"]}
             data={graphicData}
             innerRadius={85}
             labelRadius={150}
@@ -238,17 +307,103 @@ export default function ExpensesScreen({ navigation }) {
               },
             }}
           />
-        </View>
+        </View> */}
       </View>
+      <Modal
+        isVisible={isModalVisible}
+        // swipeDirection={["up", "left", "right", "down"]}
+        // style={styles.modalView}
+        onBackdropPress={hideModal}
+        onBackButtonPress={hideModal}
+        useNativeDriverForBackdrop
+        useNativeDriver
+        hideModalContentWhileAnimating
+        // backdropColor="#B4B3DB"
+        backdropOpacity={0.8}
+        animationIn="zoomInDown"
+        // animationOut="zoomOutUp"
+        animationInTiming={600}
+        animationOutTiming={600}
+        backdropTransitionInTiming={600}
+        backdropTransitionOutTiming={600}
+        // swipeDirection={["down"]}
+      >
+        <View className="bg-[#1E2026] p-5">
+          <Text className="text-gray-400 text-sm">
+            The amount you have invested{" "}
+          </Text>
+          <View className="flex-row justify-between items-center">
+            <Text className="text-white font-['Oswald']">Invested Amount</Text>
+            <View className="whitespace-nowrap flex-row gap-1 items-baseline">
+              <Text className="text-[#F0B90B] text-xl font-['Oswald']">
+                <Currency symbol=" " quantity={userData.total_amount || 0} />
+              </Text>
+              <Text className="text-gray-500 text-xs font-['Oswald']">
+                USDT
+              </Text>
+            </View>
+          </View>
+          <View className="w-full border-b-2 border-gray-500 my-4" />
+          <Text className="text-gray-400 text-sm">
+            The profit you have made by referring new users:
+          </Text>
+          <View className="flex-row justify-between items-center">
+            <Text className="text-white font-['Oswald']">
+              Invitation Profits
+            </Text>
+            <View className="whitespace-nowrap flex-row gap-1 items-baseline">
+              <Text className="text-[#F0B90B] text-xl font-['Oswald']">
+                <Currency
+                  symbol=" "
+                  quantity={userData.referral_credits || 0}
+                />
+              </Text>
+              <Text className="text-gray-500 text-xs font-['Oswald']">
+                USDT
+              </Text>
+            </View>
+          </View>
+          <View className="w-full border-b-2 border-gray-500 my-4" />
+          <Text className="text-gray-400 text-sm">
+            The profit you have made out of your investments:
+          </Text>
+          <View className="flex-row justify-between items-center">
+            <Text className="text-white font-['Oswald']">Asset Profits</Text>
+            <View className="whitespace-nowrap flex-row gap-1 items-baseline">
+              <Text className="text-[#F0B90B] text-xl font-['Oswald']">
+                <Currency symbol=" " quantity={userData.total_profit || 0} />
+              </Text>
+              <Text className="text-gray-500 text-xs font-['Oswald']">
+                USDT
+              </Text>
+            </View>
+          </View>
+          <View className="w-full border-b-2 border-gray-500 my-4" />
+          <Text className="text-gray-400 text-sm">
+            The profits you have made from your referrals assets
+          </Text>
+          <View className="flex-row justify-between items-center">
+            <Text className="text-white font-['Oswald']">Referral Profits</Text>
+            <View className="whitespace-nowrap flex-row gap-1 items-baseline">
+              <Text className="text-[#F0B90B] text-xl font-['Oswald']">
+                <Currency
+                  symbol=" "
+                  quantity={userData.refferal_profits || 0}
+                />
+              </Text>
+              <Text className="text-gray-500 text-xs font-['Oswald']">
+                USDT
+              </Text>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
 
-const graphicColor = ["#EABA4C", "#787885", "#212121"]; // Colors
-// const wantedGraphicData = [{ y: 10 }, { y: 50 }, { y: 40 }]; // Data that we want to display
-
-// const defaultGraphicData = [{ y: 0 }, { y: 0 }, { y: 100 }];
-const defaultGraphicData = [
-  { x: "Total Assets", y: 0 },
-  { x: "Total Profits", y: 0 },
-];
+// const defaultGraphicData = [
+//   { x: "Invested Amount", y: 0 },
+//   { x: "Asset Profits", y: 0 },
+//   { x: "Referral Profits", y: 0 },
+// ];

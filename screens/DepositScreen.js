@@ -22,6 +22,7 @@ import Feather from "react-native-vector-icons/Feather";
 import Octicons from "react-native-vector-icons/Octicons";
 import * as Clipboard from "expo-clipboard";
 import CircularProgress from "react-native-circular-progress-indicator";
+import { useQueryClient } from "react-query";
 
 function DepositScreen({ route, navigation }) {
   const [step, setStep] = useState(1);
@@ -33,9 +34,11 @@ function DepositScreen({ route, navigation }) {
   const [isGettingPlans, setIsGettingPlans] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { userToken } = useAuth();
+  const queryClient = useQueryClient();
 
   const handleGetPlans = async () => {
     setIsGettingPlans(true);
+    console.log(`${BASE_URL}/profile/plans?amount=${amount}`);
     await axios
       .get(`${BASE_URL}/profile/plans?amount=${amount}`, {
         headers: {
@@ -115,6 +118,7 @@ function DepositScreen({ route, navigation }) {
           "Your deposit request has successfully submited!",
           ToastAndroid.SHORT
         );
+        queryClient.invalidateQueries("profile");
         navigation.navigate("Home");
       })
       .catch((err) => {

@@ -80,16 +80,32 @@ export default function AssetsScreen({ navigation }) {
           refreshControl={
             <RefreshControl refreshing={isLoading} onRefresh={refetch} />
           }
+          contentContainerStyle={
+            dataList?.length > 0
+              ? {
+                  paddingRight: 20,
+                  paddingLeft: 20,
+                  paddingBottom: 20,
+                }
+              : { flexGrow: 1, justifyContent: "center", alignItems: "center" }
+          }
+          ListHeaderComponent={
+            dataList?.length === 0 ? (
+              <View className="flex-1 items-center justify-center">
+                <Text className="text-white">No Records!</Text>
+              </View>
+            ) : null
+          }
           pagingEnabled={true}
           legacyImplementation={false}
           data={dataList}
           onEndReached={loadMore}
           onEndReachedThreshold={0.3}
-          contentContainerStyle={{
-            paddingRight: 20,
-            paddingLeft: 20,
-            paddingBottom: 20,
-          }}
+          // contentContainerStyle={{
+          //   paddingRight: 20,
+          //   paddingLeft: 20,
+          //   paddingBottom: 20,
+          // }}
           ListFooterComponent={isFetchingNextPage ? renderSpinner : null}
           renderItem={({ item }) => (
             <RenderData item={item} navigation={navigation} />
@@ -126,7 +142,7 @@ export const RenderData = memo(({ item, navigation }) => {
     item && (
       <View className="w-full rounded-md mb-1.5 p-3 bg-[#1E2026]">
         <View className="w-full items-center justify-between flex-row">
-          <View className="flex-1 items-start">
+          {/* <View className="flex-1 items-start">
             <CircularProgress
               value={item?.remaining}
               radius={35}
@@ -144,10 +160,8 @@ export const RenderData = memo(({ item, navigation }) => {
                 fontFamily: "Oswald",
               }}
             />
-
-            {/* <Text className="text-[#758aa6]">{item.plan?.name}</Text> */}
-          </View>
-          <View className="flex-1 items-end justify-start ">
+          </View> */}
+          <View className="flex-1 flex-row items-end justify-between ">
             <View className="whitespace-nowrap flex-row gap-1 items-baseline">
               <Text className="text-[#fefefe] text-xl font-['Oswald']">
                 {item.amount}
