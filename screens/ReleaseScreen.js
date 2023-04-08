@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Dimensions,
+  Platform,
   Text,
   ToastAndroid,
   View,
@@ -134,10 +135,10 @@ function ReleaseScreen({ route, navigation }) {
           <View
             style={{
               width: (Dimensions.get("screen").width * 90) / 100,
-              height: 190,
+              height: Platform.OS == "ios" ? 180 : 190,
               position: "absolute",
               zIndex: 2,
-              bottom: 10,
+              bottom: Platform.OS == "ios" ? 15 : 10,
               backgroundColor: colors[1], // Green
               opacity: 0.6,
               transform: [{ scale: 0.95 }],

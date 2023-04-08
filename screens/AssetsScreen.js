@@ -58,13 +58,13 @@ export default function AssetsScreen({ navigation }) {
   useEffect(() => {
     if (!data) return;
 
-    let items = data?.pages[data?.pages?.length - 1]?.data?.items;
-    // console.log(data?.pages);
-    if (items?.current_page === items?.total_pages) {
-      setLastPageReached(true);
-    }
+    // console.log(data.pages.flatMap((x) => x.data.items));
+    setDataList(data.pages.flatMap((x) => x.data.items));
 
-    setDataList(data?.pages?.flatMap((x) => x.data?.items));
+    // let items = data?.pages[data.pages?.length - 1]?.data.items;
+    // if (items?.current_page === items?.total_pages) {
+    //   setLastPageReached(true);
+    // }
   }, [data]);
 
   const renderSpinner = () => {

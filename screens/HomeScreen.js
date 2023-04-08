@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Dimensions,
+  Platform,
   Pressable,
   RefreshControl,
   Text,
@@ -23,6 +24,8 @@ import UsdtIcon from "../src/assets/svg/usdtIcon";
 import SimpleLogo from "../src/assets/svg/SimpleLogo";
 // import { VictoryLabel, VictoryPie, VictoryTooltip } from "victory-native";
 import { RenderData } from "./SettingsScreen";
+import Carousel from "react-native-reanimated-carousel";
+import { StatusBarHeight } from "../helpers/StatusBarHeight";
 
 const fetchData = (token) => {
   return axios.get(`${BASE_URL}/profile`, {
@@ -41,6 +44,8 @@ export default function ExpensesScreen({ navigation }) {
     total_amount: 0,
     total_profit: 0,
   });
+  const width = Dimensions.get("window").width;
+
   // const [graphicData, setGraphicData] = useState(defaultGraphicData);
   // const [lastPageReached, setLastPageReached] = useState(false);
   // let [fontsLoaded] = useFonts({
@@ -68,9 +73,9 @@ export default function ExpensesScreen({ navigation }) {
 
   useEffect(() => {
     if (!data) return;
-    console.log(data.data);
+    // console.log(data.data);
     // console.log(data.data?.total_profit);
-    setUserData(data.data);
+    setUserData(data?.data);
     // const wantedGraphicData = [
     //   { x: "Invested Amount", y: data.data?.total_amount },
     //   { x: "Asset Profits", y: data.data?.total_profit },
@@ -79,9 +84,9 @@ export default function ExpensesScreen({ navigation }) {
     // setGraphicData(wantedGraphicData);
   }, [data]);
 
-  const copyToClipboard = async (val) => {
-    await Clipboard.setStringAsync(val);
-  };
+  // const copyToClipboard = async (val) => {
+  //   await Clipboard.setStringAsync(val);
+  // };
 
   // const colors = ["#f1e4c7", "#E5E8ED", "#F3F4F6"];
 
@@ -97,135 +102,201 @@ export default function ExpensesScreen({ navigation }) {
           maxHeight: Dimensions.get("screen").height / 3.2,
         }}
       >
-        <SafeAreaView className="flex-row items-center justify-between w-full p-5">
-          <View className="h-12 w-12">
-            <SimpleLogo />
-          </View>
-          <View>
-            <Text className="font-['Oswald'] text-xl">DIAMOND STAKE</Text>
-          </View>
-          <View
-            className="h-12 w-12 rounded-full overflow-hidden bg-[#ec2224]"
-            style={{
-              hadowColor: "#000",
-              shadowOffset: {
-                width: 0,
-                height: 2,
-              },
-              shadowOpacity: 0.25,
-              shadowRadius: 3.84,
-
-              elevation: 5,
-            }}
-          >
-            <CanadaFleg />
-          </View>
-        </SafeAreaView>
-        {/* <View
-          className="relative h-32 items-center"
-          style={{ position: "relative" }}
+        <View
+          className="w-full justify-center"
+          style={{ paddingTop: StatusBarHeight }}
         >
-          <View
-            style={{
-              width: (Dimensions.get("screen").width * 90) / 100,
-              height: 100,
-              position: "absolute",
-              zIndex: 1,
-              bottom: 0,
-              backgroundColor: colors[2],
-              opacity: 0.3,
-              transform: [{ scale: 0.9 }],
-              borderRadius: 10,
-            }}
-          />
-          <View
-            style={{
-              width: (Dimensions.get("screen").width * 90) / 100,
-              height: 100,
-              position: "absolute",
-              zIndex: 2,
-              bottom: 10,
-              backgroundColor: colors[1], // Green
-              opacity: 0.6,
-              transform: [{ scale: 0.95 }],
-              borderRadius: 10,
-            }}
-          />
-          <View
-            style={{
-              width: (Dimensions.get("screen").width * 90) / 100,
-              height: 100,
-              position: "absolute",
-              zIndex: 3,
-              bottom: 20,
-              backgroundColor: colors[0], // Blue
-              opacity: 1,
-              transform: [{ scale: 1.0 }],
-              borderRadius: 10,
-            }}
-          >
-            <View className="flex-row items-center h-full">
-              <View className="w-20 items-center justify-center">
-                <Icon name="user" size={45} color="#c99" />
-              </View>
-              <View className="">
-                <TouchableOpacity
-                  onPress={() => copyToClipboard(userData.referral_code)}
-                >
-                  <Text className="p-1 text-base text-blue-800 font-['Oswald'] tracking-wide">
-                    Your Referral Code: {userData.referral_code}
-                  </Text>
-                </TouchableOpacity>
+          <View className="flex-row items-center justify-between h-20">
+            <View className="h-12 w-12 ml-5">
+              <SimpleLogo />
+            </View>
+            <View>
+              <Text className="font-['Oswald'] text-xl">DIAMOND STAKE</Text>
+            </View>
+            <View
+              className="h-12 w-12 mr-5"
+              // style={{
+              //   shadowColor: "#000",
+              //   shadowOffset: {
+              //     width: 0,
+              //     height: 2,
+              //   },
+              //   shadowOpacity: 0.25,
+              //   shadowRadius: 3.84,
 
-                <Text className="p-1 text-xs text-gray-500 font-['Oswald'] tracking-wide">
-                  Your Referred Users Count: {userData.referral_count}
-                </Text>
-              </View>
+              //   elevation: 5,
+              // }}
+            >
+              <CanadaFleg />
             </View>
           </View>
-        </View> */}
-        <View className="w-full flex-row items-center justify-evenly">
-          <Pressable
-            onPress={() => {
-              // console.log(navigation.navigate("AssetsStack"));
-              navigation.navigate("AssetsStack");
-            }}
-          >
-            <Icon name="minuscircleo" size={35} color="#E12028" />
-          </Pressable>
-          <Pressable
-            onPress={() => {
-              setModalVisible(true);
-            }}
-          >
-            <Text
-              className="flex-row items-center"
-              style={{ fontFamily: "Oswald" }}
-            >
-              <Text className="text-white text-4xl flex-row justify-end items-end">
-                <Currency
-                  symbol=""
-                  quantity={
-                    userData.total_amount +
-                    userData.referral_credits +
-                    userData.total_profit
-                  }
-                />
-              </Text>
-              <View className="h-5 w-5 pl-0.5">
-                <UsdtIcon />
-              </View>
-            </Text>
-          </Pressable>
-          <Pressable
-            onPress={() => {
-              navigation.navigate("Deposit");
-            }}
-          >
-            <Icon name="pluscircleo" size={35} color="#5EA919" />
-          </Pressable>
         </View>
 
+        <View
+          // className="bg-black"
+          style={{
+            flex: 1,
+            alignItems: "center",
+          }}
+        >
+          <Carousel
+            loop
+            width={width}
+            height={80}
+            autoPlay={true}
+            data={userData?.plans}
+            scrollAnimationDuration={2000}
+            mode="parallax"
+            // modeConfig={{
+            //   parallaxScrollingScale: 0.9,
+            //   parallaxScrollingOffset: 50,
+            // }}
+            snapEnabled={false}
+            autoPlayInterval={1500}
+            // onSnapToItem={(index) => console.log("current index:", index)}
+            renderItem={({ item }) => (
+              <View
+                className={`w-full h-20 flex-row rounded-xl overflow-hidden bg-[#F3F4F6]`}
+                style={{
+                  shadowColor: "#000",
+                  shadowOffset: {
+                    width: 0,
+                    height: 2,
+                  },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 3.84,
+
+                  elevation: 6,
+                }}
+              >
+                <View
+                  className={`items-center justify-center w-10 bg-[#1E2026]`}
+                >
+                  <Text
+                    numberOfLines={1}
+                    className="text-white font-['Oswald'] whitespace-nowrap text-base capitalize -rotate-90"
+                  >
+                    {item.name}
+                  </Text>
+                </View>
+                <View className="flex-row justify-between flex-1 p-2">
+                  <View className="justify-between flex-1">
+                    <View className="flex-row items-baseline">
+                      <Text
+                        className={`font-['Oswald200'] text-base mr-2 text-gray-900`}
+                      >
+                        Profit:
+                      </Text>
+                      <Text
+                        className={`font-['Oswald'] font-bold text-lg text-gray-900`}
+                      >
+                        {item.profit}
+                      </Text>
+                    </View>
+                    <View className="flex-row justify-between">
+                      <View className="flex-row ">
+                        <Text
+                          className={`font-['Oswald200'] text-base mr-2 text-gray-900`}
+                        >
+                          Min Amount:
+                        </Text>
+                        <Text
+                          className={`font-['Oswald'] text-base text-gray-900`}
+                        >
+                          {item.min_amount}
+                        </Text>
+                      </View>
+                      <View className="flex-row ">
+                        <Text
+                          className={`font-['Oswald200'] text-base mr-2 text-gray-900`}
+                        >
+                          Min Referrals:
+                        </Text>
+                        <Text
+                          className={`font-['Oswald'] text-base text-gray-900`}
+                        >
+                          {item.min_referrals}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                  <View className="flex-row items-center justify-center">
+                    {item.plan_type === "fixed" && (
+                      <CircularProgress
+                        value={item?.days}
+                        radius={30}
+                        duration={1500}
+                        progressValueColor={"#fefefe"}
+                        activeStrokeWidth={2}
+                        inActiveStrokeWidth={2}
+                        activeStrokeColor={
+                          selectedPlan === plan.id ? "#70694C" : "#F0B90B"
+                        }
+                        maxValue={item?.days}
+                        title={"DAYS"}
+                        titleColor={"white"}
+                        titleStyle={{
+                          fontSize: 7,
+                          fontFamily: "Oswald",
+                        }}
+                        progressValueStyle={{
+                          fontWeight: "100",
+                          fontFamily: "Oswald",
+                        }}
+                      />
+                    )}
+                  </View>
+                </View>
+              </View>
+            )}
+
+            // renderItem={({ index }) => <SBItem index={index} />}
+          />
+        </View>
+
+        <View className="w-full items-center justify-between">
+          <View className="w-full flex-row items-center justify-evenly">
+            <Pressable
+              onPress={() => {
+                // console.log(navigation.navigate("AssetsStack"));
+                navigation.navigate("AssetsStack");
+              }}
+            >
+              <Icon name="minuscircleo" size={35} color="#E12028" />
+            </Pressable>
+            <Pressable
+              onPress={() => {
+                setModalVisible(true);
+              }}
+            >
+              <Text
+                className="flex-row items-center"
+                style={{ fontFamily: "Oswald" }}
+              >
+                <Text className="text-white text-4xl flex-row justify-end items-end">
+                  <Currency
+                    symbol=""
+                    quantity={
+                      userData.total_amount +
+                      userData.referral_credits +
+                      userData.total_profit
+                    }
+                  />
+                </Text>
+                <View className="h-5 w-5 pl-0.5">
+                  <UsdtIcon />
+                </View>
+              </Text>
+            </Pressable>
+            <Pressable
+              onPress={() => {
+                navigation.navigate("Deposit");
+              }}
+            >
+              <Icon name="pluscircleo" size={35} color="#5EA919" />
+            </Pressable>
+          </View>
+        </View>
         <DashboardBg />
       </View>
       <View className="flex-1 relative pt-5 items-center ">
@@ -279,6 +350,7 @@ export default function ExpensesScreen({ navigation }) {
             className="w-full"
           />
         </View>
+
         {/* <View
           className="items-center justify-center"
           style={{

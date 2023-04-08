@@ -50,6 +50,7 @@ import ReferralsScreen from "./screens/ReferralsScreen";
 
 import { LogBox } from "react-native";
 import ReleaseScreen from "./screens/ReleaseScreen";
+import { StatusBarHeight } from "./helpers/StatusBarHeight";
 LogBox.ignoreLogs(["new NativeEventEmitter"]);
 
 const Stack = createNativeStackNavigator();
@@ -188,7 +189,7 @@ const BottomTabNavigator = ({ navigation }) => {
       <Tab.Screen
         name="Referrals"
         options={{
-          headerStatusBarHeight: StatusBar.currentHeight,
+          headerStatusBarHeight: StatusBarHeight,
           // @ts-ignore
           tabBarIcon: ({ ref, active }) => {
             return (
@@ -205,7 +206,7 @@ const BottomTabNavigator = ({ navigation }) => {
       <Tab.Screen
         name="Settings"
         options={{
-          headerStatusBarHeight: StatusBar.currentHeight,
+          headerStatusBarHeight: StatusBarHeight,
           // @ts-ignore
           tabBarIcon: ({ ref, active }) => {
             return (
@@ -248,7 +249,7 @@ const DashboardStackScreen = () => {
         name="Deposit"
         component={DepositScreen}
         options={{
-          headerStatusBarHeight: StatusBar.currentHeight,
+          headerStatusBarHeight: StatusBarHeight,
           headerTitle: "Deposit Request",
           headerTitleStyle: { fontFamily: "Oswald" },
         }}
@@ -270,7 +271,7 @@ const AssetsStackScreen = () => {
         headerTitleStyle: {
           fontFamily: "Oswald",
         },
-        headerStatusBarHeight: StatusBar.currentHeight,
+        headerStatusBarHeight: StatusBarHeight,
         translucent: true,
       }}
     >

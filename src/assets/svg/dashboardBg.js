@@ -10,7 +10,7 @@ export default function SvgComponent(props) {
       height={30}
       viewBox="0 0 1440 30"
       preserveAspectRatio="none"
-      className="absolute bottom-0"
+      // className="absolute bottom-0"
       style={{
         // backgroundColor: "transparent",
         position: "absolute",

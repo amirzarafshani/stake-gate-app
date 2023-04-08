@@ -59,8 +59,6 @@ function DepositScreen({ route, navigation }) {
       });
   };
 
-  let { logOut } = useAuth();
-
   const handleGoToStep1 = () => {
     setSelectedPlan(undefined);
     setStep(1);
@@ -437,11 +435,6 @@ function DepositScreen({ route, navigation }) {
           </View>
         </View>
       </ScrollView>
-      {/* <StepButton
-        label={"Logout"}
-        onPress={logOut}
-        // disabled={isGettingPlans || !amount}
-      /> */}
     </View>
   );
 }

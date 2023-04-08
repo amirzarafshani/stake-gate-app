@@ -47,8 +47,10 @@ export const AuthProvider = ({ children }) => {
       .then((res) => {
         const { data } = res;
         // console.log(data.token);
-        setUserToken(data.token);
-        AsyncStorage.setItem("userToken", data.token);
+        if (data) {
+          setUserToken(data.token);
+          AsyncStorage.setItem("userToken", data.token);
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -65,25 +67,28 @@ export const AuthProvider = ({ children }) => {
       password,
     });
 
-    axios
-      .post(
-        `${BASE_URL}/auth/register`,
-        {
-          email,
-          password,
+    fetch(
+      `${BASE_URL}/auth/register`,
+      {
+        email,
+        password,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        }
-      )
+      }
+    )
+      .then((response) => response.json())
       .then((res) => {
+        console.log(res);
         const { data } = res;
         // console.log(data.token);
-        setUserToken(data.token);
-        AsyncStorage.setItem("userToken", data.token);
+        if (data) {
+          setUserToken(data.token);
+          AsyncStorage.setItem("userToken", data.token);
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -102,7 +107,7 @@ export const AuthProvider = ({ children }) => {
     try {
       setIsLoading(true);
       let userToken_ = await AsyncStorage.getItem("userToken");
-      console.log(userToken_);
+      // console.log(userToken_);
       setUserToken(userToken_);
       setIsLoading(false);
     } catch (error) {}

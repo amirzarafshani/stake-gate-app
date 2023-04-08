@@ -18,7 +18,7 @@ const SplashScreen = (props) => {
     Oswald200,
     Oswald300,
   });
-  let { userToken, logOut } = useAuth();
+  let { userToken } = useAuth();
 
   useEffect(() => {
     setTimeout(() => {
