@@ -197,6 +197,7 @@ function DepositScreen({ route, navigation }) {
                 <View className="mt-5 mb-2 space-y-1">
                   {plans?.map((plan, index) => (
                     <Pressable
+                      disabled={plans.length - 1 !== index}
                       key={`plan-item-${index}`}
                       onPress={() => setSelectedPlan(plan.id)}
                     >
@@ -206,11 +207,17 @@ function DepositScreen({ route, navigation }) {
                         }`}
                       >
                         <View
-                          className={`items-center justify-center w-10 bg-[#F0B90B] border-r ${
+                          className={`items-center justify-center w-10  border-r ${
                             selectedPlan === plan.id
                               ? "border-gray-700"
                               : "border-[#1E2026]"
-                          }`}
+                          }
+                          ${
+                            plans.length - 1 !== index
+                              ? "bg-gray-700"
+                              : "bg-[#F0B90B]"
+                          }
+                          `}
                         >
                           <Text
                             numberOfLines={1}

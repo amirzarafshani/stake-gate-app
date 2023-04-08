@@ -60,27 +60,29 @@ export const AuthProvider = ({ children }) => {
       });
   }
 
-  function register(email, password) {
+  function register(email, password, referral_code) {
     setIsRegistering(true);
     console.log({
       email,
       password,
+      referral_code,
     });
 
-    fetch(
-      `${BASE_URL}/auth/register`,
-      {
-        email,
-        password,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
+    axios
+      .post(
+        `${BASE_URL}/auth/register`,
+        {
+          email,
+          password,
+          referral_code,
         },
-      }
-    )
-      .then((response) => response.json())
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      )
       .then((res) => {
         console.log(res);
         const { data } = res;

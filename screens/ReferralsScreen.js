@@ -13,7 +13,7 @@ import StepButton from "../components/StepButton";
 // import StepButton from "../components/StepButton";
 
 const fetchData = (page, token) => {
-  // console.log(page);
+  console.log(token);
   return axios.get(`${BASE_URL}/referrals`, {
     headers: {
       "Content-Type": "application/json",
@@ -199,8 +199,8 @@ export const RenderData = memo(({ item }) => {
           </Text>
           <View className="whitespace-nowrap flex-row gap-1 items-baseline">
             <Text className="text-[#5EA919] text-xl font-['Oswald']">
-              {item.referrer_ptofits
-                ? `+${item.referrer_ptofits.toFixed(2)}`
+              {item.referrer_assets_profit
+                ? `+${item.referrer_assets_profit.toFixed(2)}`
                 : 0}
             </Text>
             <Text className="text-gray-500 text-xs font-['Oswald']">USDT</Text>

@@ -11,8 +11,10 @@ import DashboardBg from "../src/assets/svg/dashboardBg";
 import Logo from "../src/assets/svg/Logo";
 
 export default function RegisterScreen() {
+  const [referralCode, setReferralCode] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const { register, isRegistering } = useAuth();
   const navigation = useNavigation();
 
@@ -62,13 +64,47 @@ export default function RegisterScreen() {
             value={password}
             onChange={(val) => setPassword(val)}
           />
+
+          <InputField
+            label={"Confirm Password"}
+            icon={
+              <Ionicons
+                name="ios-lock-closed-outline"
+                size={20}
+                color="#666"
+                style={{ marginRight: 5 }}
+              />
+            }
+            inputType="password"
+            // fieldButtonLabel={"Forgot?"}
+            fieldButtonFunction={() => {}}
+            value={confirmPassword}
+            onChange={(val) => setConfirmPassword(val)}
+          />
+
+          <InputField
+            label={"Referral Code"}
+            icon={
+              <MaterialIcons
+                name="alternate-email"
+                size={20}
+                color="#666"
+                style={{ marginRight: 5 }}
+              />
+            }
+            // keyboardType="email-address"
+            value={referralCode}
+            onChange={(val) => setReferralCode(val)}
+          />
         </View>
 
         <Button
-          disabled={isRegistering}
+          disabled={
+            isRegistering || !email || !password || password !== confirmPassword
+          }
           label={"Register"}
           onPress={() => {
-            register(email, password);
+            register(email, password, referralCode);
           }}
           className="bg-[#F0B90B] w-full"
           isLoading={isRegistering}
