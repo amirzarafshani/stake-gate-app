@@ -255,7 +255,7 @@ export default function ExpensesScreen({ navigation }) {
         </View>
 
         <View className="w-full items-center justify-between">
-          <View className="w-full flex-row items-center justify-evenly">
+          <View className="w-full flex-row items-center justify-evenly pt-3">
             <Pressable
               onPress={() => {
                 // console.log(navigation.navigate("AssetsStack"));
