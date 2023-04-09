@@ -406,7 +406,9 @@ function DepositScreen({ route, navigation }) {
                           placeholderTextColor="#666"
                           className="text-white font-['Oswald'] px-2 whitespace-nowrap leading-5"
                           value={transaction_id}
-                          onChange={setTransactionId}
+                          onChange={(e) => {
+                            setTransactionId(e.nativeEvent.text);
+                          }}
                         />
                       </View>
                     </ScrollView>
