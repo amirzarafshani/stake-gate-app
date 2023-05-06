@@ -2,7 +2,7 @@
   "expo": {
     "name": "Diamond Stake",
     "slug": "diamond-stake",
-    "version": "1.0.1",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -35,5 +35,14 @@
       }
     },
     "owner": "amirzarafshani"
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleId": "fareed.behzad@yahoo.com",
+        "ascAppId": "6447433994",
+        "appleTeamId": "B275XN4J4X"
+      }
+    }
   }
 }

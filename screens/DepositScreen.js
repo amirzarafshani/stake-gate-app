@@ -23,6 +23,7 @@ import Octicons from "react-native-vector-icons/Octicons";
 import * as Clipboard from "expo-clipboard";
 import CircularProgress from "react-native-circular-progress-indicator";
 import { useQueryClient } from "react-query";
+import { toast } from "@backpackapp-io/react-native-toast";
 
 function DepositScreen({ route, navigation }) {
   const [step, setStep] = useState(1);
@@ -48,11 +49,24 @@ function DepositScreen({ route, navigation }) {
         },
       })
       .then((res) => {
-        setPlans(res.data);
-        setStep(2);
+        if (res.data?.length > 0) {
+          setPlans(res.data);
+          setStep(2);
+        } else {
+          toast.error(
+            "There is no plan for this amount of staking. Please try another amount."
+          );
+        }
       })
       .catch((err) => {
         console.log(err);
+        if (err?.response?.data?.errors?.length > 0) {
+          err?.response?.data?.errors?.forEach((element, i) => {
+            toast.error(element);
+          });
+        } else if (err?.response?.data?.errors) {
+          toast.error(err?.response?.data?.errors);
+        }
       })
       .finally(() => {
         setIsGettingPlans(false);
@@ -112,15 +126,23 @@ function DepositScreen({ route, navigation }) {
         },
       })
       .then((res) => {
-        ToastAndroid.show(
-          "Your deposit request has successfully submited!",
-          ToastAndroid.SHORT
-        );
+        // ToastAndroid.show(
+        //   "Your deposit request has successfully submited!",
+        //   ToastAndroid.SHORT
+        // );
+        toast.success("Your deposit request has successfully submited!");
         queryClient.invalidateQueries("profile");
         navigation.navigate("Home");
       })
       .catch((err) => {
         console.log({ err });
+        if (err?.response?.data?.errors?.length > 0) {
+          err?.response?.data?.errors?.forEach((element, i) => {
+            toast.error(element);
+          });
+        } else if (err?.response?.data?.errors) {
+          toast.error(err?.response?.data?.errors);
+        }
       })
       .finally(() => {
         setIsSubmitting(false);

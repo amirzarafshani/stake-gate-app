@@ -2,6 +2,8 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BASE_URL } from "../config";
+import { showMessage, hideMessage } from "react-native-flash-message";
+import { toast } from "@backpackapp-io/react-native-toast";
 
 const authContextDefaultValues = {
   userToken: null,
@@ -18,6 +20,7 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
   const [userToken, setUserToken] = useState(null);
+  // const { toast } = useToast();
 
   useEffect(() => {
     isLoggedIn();
@@ -54,6 +57,7 @@ export const AuthProvider = ({ children }) => {
       })
       .catch((err) => {
         console.log(err);
+        toast.error("Please check your information and try again");
       })
       .finally(() => {
         setIsLoading(false);
@@ -93,7 +97,12 @@ export const AuthProvider = ({ children }) => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err?.response?.data?.errors);
+        if (err?.response?.data?.errors) {
+          err?.response?.data?.errors?.forEach((element, i) => {
+            toast.error(element);
+          });
+        }
       })
       .finally(() => {
         setIsRegistering(false);

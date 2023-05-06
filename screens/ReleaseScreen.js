@@ -15,6 +15,7 @@ import useAuth from "../hooks/useAuth";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Button from "../components/Button";
 import Currency from "react-currency-formatter";
+import { toast } from "@backpackapp-io/react-native-toast";
 
 const fetchData = (id, token) => {
   return axios.get(`${BASE_URL}/assets/${id}`, {
@@ -60,10 +61,11 @@ function ReleaseScreen({ route, navigation }) {
       )
       .then((res) => {
         // const { data } = res;
-        ToastAndroid.show(
-          "Your release request has successfully submited!",
-          ToastAndroid.SHORT
-        );
+        // ToastAndroid.show(
+        //   "Your release request has successfully submited!",
+        //   ToastAndroid.SHORT
+        // );
+        toast.success("Your release request has successfully submited!");
         queryClient.invalidateQueries("assets");
         queryClient.invalidateQueries("profile");
         navigation.navigate("Assets");
@@ -73,6 +75,13 @@ function ReleaseScreen({ route, navigation }) {
         if (err?.response?.status === 401) {
           logOut();
           navigation.navigate("Login");
+        }
+        if (err?.response?.data?.errors?.length > 0) {
+          err?.response?.data?.errors?.forEach((element, i) => {
+            toast.error(element);
+          });
+        } else if (err?.response?.data?.errors) {
+          toast.error(err?.response?.data?.errors);
         }
       })
       .finally(() => {

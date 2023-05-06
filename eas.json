@@ -23,6 +23,20 @@
     }
   },
   "submit": {
-    "production": {}
+    "SUBMIT_PROFILE_1": {
+      "android": {
+        "track": "beta",
+        "releaseStatus": "completed",
+        "changesNotSentForReview": true
+      },
+      "ios": {
+        "appleId": "fareed.behzad@yahoo.com",
+        "ascAppId": "6447433994",
+        "appleTeamId": "B275XN4J4X",
+        "sku": "diamond_stake_001",
+        "language": "en-US",
+        "appName": "Diamond Stake"
+      }
+    }
   }
 }

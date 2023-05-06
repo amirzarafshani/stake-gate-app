@@ -5,6 +5,8 @@ import { QueryCache, QueryClient, QueryClientProvider } from "react-query";
 import useAuth, { AuthProvider } from "./hooks/useAuth";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
+import { toast, Toasts } from "@backpackapp-io/react-native-toast";
+
 import {
   Pressable,
   StatusBar,
@@ -13,6 +15,7 @@ import {
   Text,
   ActivityIndicator,
   TouchableOpacity,
+  Button,
 } from "react-native";
 // navigation
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
@@ -51,6 +54,7 @@ import ReferralsScreen from "./screens/ReferralsScreen";
 import { LogBox } from "react-native";
 import ReleaseScreen from "./screens/ReleaseScreen";
 import { StatusBarHeight } from "./helpers/StatusBarHeight";
+import FlashMessage from "react-native-flash-message";
 LogBox.ignoreLogs(["new NativeEventEmitter"]);
 
 const Stack = createNativeStackNavigator();
@@ -81,49 +85,52 @@ export const Navigation = () => {
   });
 
   return (
-    <NavigationContainer
-      ref={navigationRef}
-      theme={navTheme}
-      options={{ headerTitleStyle: { fontFamily: "Oswald" } }}
-    >
-      <QueryClientProvider client={queryClient}>
-        <TailwindProvider>
-          <Stack.Navigator initialRouteName="Splash">
-            <Stack.Screen
-              name="Splash"
-              options={{ animationEnabled: false, header: () => null }}
-              component={SplashScreen}
-            />
-            <Stack.Screen
-              name="Home"
-              options={{ header: () => null }}
-              component={BottomTabNavigator}
-            />
-            <Stack.Screen
-              name="Login"
-              component={LoginScreen}
-              options={{
-                headerShown: false,
-                headerLeft: () => false,
-                gestureEnabled: false,
-                headerBackVisible: false,
-              }}
-            />
-            <Stack.Screen
-              name="Register"
-              component={RegisterScreen}
-              options={{
-                headerShown: false,
-                headerLeft: () => false,
-                gestureEnabled: false,
-                headerBackVisible: false,
-              }}
-            />
-          </Stack.Navigator>
-        </TailwindProvider>
-      </QueryClientProvider>
-      {/* </View> */}
-    </NavigationContainer>
+    <>
+      <NavigationContainer
+        ref={navigationRef}
+        theme={navTheme}
+        options={{ headerTitleStyle: { fontFamily: "Oswald" } }}
+      >
+        <QueryClientProvider client={queryClient}>
+          <TailwindProvider>
+            <Stack.Navigator initialRouteName="Splash">
+              <Stack.Screen
+                name="Splash"
+                options={{ animationEnabled: false, header: () => null }}
+                component={SplashScreen}
+              />
+              <Stack.Screen
+                name="Home"
+                options={{ header: () => null }}
+                component={BottomTabNavigator}
+              />
+              <Stack.Screen
+                name="Login"
+                component={LoginScreen}
+                options={{
+                  headerShown: false,
+                  headerLeft: () => false,
+                  gestureEnabled: false,
+                  headerBackVisible: false,
+                }}
+              />
+              <Stack.Screen
+                name="Register"
+                component={RegisterScreen}
+                options={{
+                  headerShown: false,
+                  headerLeft: () => false,
+                  gestureEnabled: false,
+                  headerBackVisible: false,
+                }}
+              />
+            </Stack.Navigator>
+          </TailwindProvider>
+        </QueryClientProvider>
+        {/* </View> */}
+      </NavigationContainer>
+      <Toasts />
+    </>
   );
 };
 
