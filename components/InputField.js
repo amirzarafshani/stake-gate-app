@@ -43,6 +43,7 @@ export default function InputField({
           style={styles.textInput}
           secureTextEntry={true}
           onChange={onChange_}
+          autoCapitalize="none"
         />
       ) : (
         <TextInput
@@ -51,6 +52,7 @@ export default function InputField({
           style={{ ...styles.textInput, style }}
           keyboardType={keyboardType}
           onChange={onChange_}
+          autoCapitalize="none"
         />
       )}
       <TouchableOpacity onPress={fieldButtonFunction}>

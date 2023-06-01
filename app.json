@@ -2,7 +2,7 @@
   "expo": {
     "name": "Diamond Stake",
     "slug": "diamond-stake",
-    "version": "1.0.5",
+    "version": "1.0.7",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -17,7 +17,8 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.app.diamondstake"
+      "bundleIdentifier": "com.app.diamondstake",
+      "buildNumber": "3"
     },
     "android": {
       "adaptiveIcon": {
