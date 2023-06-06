@@ -36,10 +36,10 @@ export const AuthProvider = ({ children }) => {
     axios
       .post(
         `${BASE_URL}/auth/login`,
-        {
+        JSON.stringify({
           email,
           password,
-        },
+        }),
         {
           headers: {
             "Content-Type": "application/json",
